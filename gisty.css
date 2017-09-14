@@ -129,31 +129,16 @@ code{
 }
 
 .searchbox {
-  position: absolute;
+  position: inherit;
   top: 10px;
   right: 10px;
 }
 
-
-
-
-/*#c43627*/
-
-
-
-/*.btn-outline-success:hover {*/
-/*    color: #fff;*/
-/*    background-color: #5cb893;*/
-/*    border-color: #5cb893;*/
-/*}*/
-
-/*.btn-outline-success {*/
-/*    color: #5cb893;*/
-    /*background-color: #5cb893;*/
-/*    border-color: #5cb893;*/
-/*}*/
-
-
 .list-group-item:first-child,.list-group-item:last-child {
     border-radius: 0rem;
 }
+
+.list-group-item{
+  display: block;
+}
+
