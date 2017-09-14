@@ -395,6 +395,10 @@ var app = function () {
 	$("#language").html(languages.el);
 	$("#tags").html(tags.el);
 	$(".searchbox").html(searchView.el);
+	
+	
+	window.gists = gists;
+	
 }
 
 var APIkey = localStorage.getItem("gistyAPIKey") || "";

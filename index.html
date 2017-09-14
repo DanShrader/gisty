@@ -48,14 +48,39 @@
   </script>
   
   <script type="text/template" id='item'>
-    <p style='font-height:8px !important'><%= updated_at %></p>
     <p class='truncate'><%= description %></p>
+    <p style='font-height:8px !important'><%= updated_at %></p>
+    
+    <%
+      if (tags.length > 0) {
+          _.each(tags.split(' '), function (tags) { %>
+              <span class='badge badge-pill badge-primary'><%= tags %></span><%
+          });
+      }
+    %>
   </script>
 
   <script type="text/template" id='details'>
-    <p><%= description %></p>
-    <a target="_blank" href="<%= html_url %>">github gist link</a>
-    <hr>
+    <div class="row">
+      <div class="col-8">
+        
+      </div>
+      <div class="col">
+        <a target="_blank" href="<%= html_url %>" class="btn btn-info float-right">github gist link</a>
+      </div>
+    </div>
+    
+    <div class="row">
+      <p><%= description %></p>
+    </div>
+      <%
+        if (tags.length > 0) {
+            _.each(tags.split(' '), function (tags) { %>
+                <span class='badge badge-pill badge-primary'><%= tags %></span><%
+            });
+        }
+      %>
+      <hr>
     <div class='files' style="padding:0px;margin:0px"></div>
   </script>
 
@@ -69,7 +94,7 @@
           <a class="nav-link bg-inverse" href="https://github.com/DanShrader/gisty" target="_blank">GitHub</a>
         </li>
       </ul>
-        <span class="nav-item searchbox"></span>
+        <span class="nav-item searchbox float-right"></span>
     </nav>
   
     <div id="wrapper">
@@ -84,7 +109,9 @@
       <div class="sidebar-wrapper" id='list'></div>
       <div id="page-content-wrapper">
         <div class="container-fluid">
-          <div id='content'>Loading...</div>
+          <div id='content'>
+            Loading...
+          </div>
         </div>
       </div>
     </div>
