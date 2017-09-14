@@ -49,7 +49,7 @@
   
   <script type="text/template" id='item'>
     <p class='truncate'><%= description %></p>
-    <p style='font-height:8px !important'><%= updated_at %></p>
+    <p style='font-height:8px !important'><%= cleanUpdateDate %></p>
     
     <%
       if (tags.length > 0) {
@@ -70,7 +70,7 @@
       </div>
     </div>
     
-    <div class="row">
+    <div>
       <p><%= description %></p>
     </div>
       <%

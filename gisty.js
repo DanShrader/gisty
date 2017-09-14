@@ -1,4 +1,17 @@
 var app = function () {
+  
+  // Thanks
+  // https://stackoverflow.com/questions/3066586/get-string-in-yyyymmdd-format-from-js-date-object
+  Date.prototype.yyyymmdd = function() {
+    var mm = this.getMonth() + 1; // getMonth() is zero-based
+    var dd = this.getDate();
+  
+    return [this.getFullYear(),
+            (mm>9 ? '' : '0') + mm,
+            (dd>9 ? '' : '0') + dd
+           ].join('-');
+  };
+
 
 	var globalKey = APIkey;
 
@@ -135,6 +148,31 @@ var app = function () {
 			tagArray.push(part[0]);
 		});
 		model.set('tags', tagArray.join(" "));
+		
+		
+		
+		model.set('cleanUpdateDate',(new Date(model.get('updated_at')).yyyymmdd()));
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 	});
 
 	gists.on('sync', function () {
@@ -247,6 +285,7 @@ var app = function () {
 
 	var fileView = Marionette.View.extend({
 		template: '#file',
+		tagName: 'l',
 		ui: {
 			copy: '.copy'
 		},
@@ -383,7 +422,9 @@ var app = function () {
 		template: '#details',
 		onRender: function () {
 			// console.warn(fileCollection.length)
-			this.el.append(files.el);
+		// 	this.el.append(files.el);
+
+      this.$el.find('.files').append(files.el);
 		}
 
 	});
