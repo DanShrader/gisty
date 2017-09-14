@@ -1,0 +1,159 @@
+
+body {
+  overflow-x: hidden;
+}
+
+.fixed-top{
+  top:0;
+  height:60px;
+  padding: 0.6rem;
+}
+
+#wrapper {
+  padding-left: 0;
+  top:0px;
+  margin-top:80px;
+  bottom: 0;
+  overflow-y: scroll;
+}
+
+
+
+
+.bg-inverse , .language-wrapper {
+    background-color: #1f2533 !important;
+    color: #d6d6d6;
+}
+
+
+.language-wrapper {
+    position: fixed;
+    width: 200px;
+    font-size: 12px;
+    overflow-y: scroll;
+    top: 60px;
+    bottom: 0;
+    padding:0.4rem;
+}
+
+.language-wrapper ul  {
+  list-style-type: none;
+  padding: 0rem;
+}
+
+.language-wrapper li  {
+  font-weight: bold;
+  padding: 3px 0px 6px 12px;
+}
+
+
+
+
+
+
+.sidebar-wrapper {
+    position: fixed;
+    width: 350px;
+    background-color: #f7f7f9;
+    font-size: 12px;
+    overflow-y: scroll;
+    margin-left: 200px;
+    top: 60px;
+    bottom: 0;
+}
+
+
+.sidebar-wrapper li  {
+    background-color:#f7f7f9;
+    font-weight: bold;
+}
+.sidebar-wrapper p  {
+    padding-bottom: 2px;
+    margin-bottom: 0px;
+}
+
+#page-content-wrapper {
+    position: relative;
+    margin-left: 550px;
+}
+
+
+
+  .truncate {
+    width: 320px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+code{
+  font-size:12px !important;
+  text-indent: 0px !important;
+}
+
+.language-wrapper li:hover, .language-wrapper li.active{
+  background-color:#f7f7f9;
+  margin-right: -20px;
+  color: #000000;
+}
+
+.language-wrapper li:active, a.bg-inverse:active,.sidebar-nav li:active,.language-wrapper li:focus, a.bg-inverse:focus,.sidebar-nav li:focus{
+    background-color: #1f2533 !important;
+    color: #d6d6d6;
+}
+.language-wrapper li:hover, a.bg-inverse:hover,.sidebar-nav li:hover{
+  background-color:#51e0c1 !important;
+  cursor: pointer;
+  cursor: hand;
+}
+
+.sidebar-nav li:hover{
+  border-color: #51e0c1;
+}
+
+
+.sidebar-nav li.active{
+    color: #000000;
+    background-color: #dedede;
+    border-color: #dedede;
+}
+
+
+.language-wrapper hr {
+  background-color:#51e0c1;
+  margin-bottom: 3px !important;
+}
+
+.badge-default {
+    background-color: #3c4b56;
+}
+
+.searchbox {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+
+
+
+/*#c43627*/
+
+
+
+/*.btn-outline-success:hover {*/
+/*    color: #fff;*/
+/*    background-color: #5cb893;*/
+/*    border-color: #5cb893;*/
+/*}*/
+
+/*.btn-outline-success {*/
+/*    color: #5cb893;*/
+    /*background-color: #5cb893;*/
+/*    border-color: #5cb893;*/
+/*}*/
+
+
+.list-group-item:first-child,.list-group-item:last-child {
+    border-radius: 0rem;
+}

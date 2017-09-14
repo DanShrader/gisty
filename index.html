@@ -1,0 +1,94 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!--<link rel="icon" href="../../favicon.ico">-->
+
+    <title>gisty~</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.3.3/backbone-min.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/backbone.marionette/3.4.3/backbone.marionette.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/backbone.radio/2.0.0/backbone.radio.min.js'></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github-gist.min.css">
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.1/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <link href="gisty.css" rel="stylesheet">
+  </head>
+
+  <script type="text/template" id='language-template'>
+    <span style='font-height:24px !important;font-weight:bold;'><%= language %> <span class="badge badge-pill badge-default"><%= length %></span></span>
+  </script>
+
+  <script type="text/template" id='tag-template'>
+    <span style='font-height:24px !important;font-weight:bold;font-style:italic'>##<%= tag %> <span class="badge badge-pill badge-default"><%= length %></span></span>
+  </script>
+
+  <script type="text/template" id='search-template'>
+    <input class="form-control mr-sm-2" type="text" placeholder="Search">
+    <button class="btn btn-outline-success my-2 my-sm-0">Search</button>
+  </script>
+
+  <script type="text/template" id='file'>
+    <div class="card">
+      <div class="card-header">
+        <h5 style="float:left;margin-top: 0.5rem;"><%= filename %></h5>
+        <button class="btn btn-primary copy" style="float:right">Copy</button>
+      </div>
+      <div class="card-body">
+        <pre class="card-text"><code class="<%= language %>"><%= raw_code %></code></pre>
+      </div>
+    </div>
+    <br>
+  </script>
+  
+  <script type="text/template" id='item'>
+    <p style='font-height:8px !important'><%= updated_at %></p>
+    <p class='truncate'><%= description %></p>
+  </script>
+
+  <script type="text/template" id='details'>
+    <p><%= description %></p>
+    <a target="_blank" href="<%= html_url %>">github gist link</a>
+    <hr>
+    <div class='files' style="padding:0px;margin:0px"></div>
+  </script>
+
+  <body>
+    <nav class="navbar-inverse fixed-top bg-inverse">
+      <ul class="nav">
+        <li class="nav-item">
+            <a class="navbar-brand" href="#">gisty~</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link bg-inverse" href="https://github.com/DanShrader/gisty" target="_blank">GitHub</a>
+        </li>
+      </ul>
+        <span class="nav-item searchbox"></span>
+    </nav>
+  
+    <div id="wrapper">
+      <div class="language-wrapper">
+        <h6>Languages</h6>
+        <hr style="margin:0rem;color:#ffffff">
+        <div id='language'></div>
+        <h6>Tags</h6>
+        <hr style="margin:0rem;color:#ffffff">
+        <div id='tags'></div>
+      </div>
+      <div class="sidebar-wrapper" id='list'></div>
+      <div id="page-content-wrapper">
+        <div class="container-fluid">
+          <div id='content'>Loading...</div>
+        </div>
+      </div>
+    </div>
+    <script src='gisty.js'></script>
+  </body>
+  
+</html>
