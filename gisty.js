@@ -285,7 +285,7 @@ var app = function () {
 
 	var fileView = Marionette.View.extend({
 		template: '#file',
-		tagName: 'l',
+		tagName: 'li',
 		ui: {
 			copy: '.copy'
 		},
@@ -419,6 +419,34 @@ var app = function () {
 	tags.render();
 
 	var detailView = Marionette.View.extend({
+	  
+	  
+	  
+
+		ui: {
+			edit: '.edit-gist',
+			read: '.read-gist'
+		},
+		events: {
+			"click @ui.edit": "editView",
+			"click @ui.read": "readView"
+		},
+		
+		editView: function () {
+		  this.template= '#template-edit-details';
+		  this.render();
+		},
+			  
+		readView: function () {
+		  this.template= '#details';
+		  this.render();
+		},
+			  
+	  
+	  
+	  
+	  
+	  
 		template: '#details',
 		onRender: function () {
 			// console.warn(fileCollection.length)

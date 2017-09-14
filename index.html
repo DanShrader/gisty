@@ -63,6 +63,7 @@
   <script type="text/template" id='details'>
     <div class="row">
       <div class="col-8">
+        <button class="btn btn-warning edit-gist">Edit</button>
         
       </div>
       <div class="col">
@@ -84,6 +85,38 @@
     <div class='files' style="padding:0px;margin:0px"></div>
   </script>
 
+
+
+
+
+  <script type="text/template" id='template-edit-details'>
+    <div class="row">
+      <div class="col-8">
+        <button class="btn btn-sucess read-gist">Save</button>
+        <button class="btn btn-warning read-gist">Cancel</button>
+      </div>
+      <div class="col">
+        <a target="_blank" href="<%= html_url %>" class="btn btn-info float-right">github gist link</a>
+      </div>
+    </div>
+    
+    <div>
+      <textarea><%= description %></textarea>
+    </div>
+      <hr>
+    <div class='files' style="padding:0px;margin:0px"></div>
+  </script>
+
+
+
+
+
+
+
+
+
+
+
   <body>
     <nav class="navbar-inverse fixed-top bg-inverse">
       <ul class="nav">
@@ -91,7 +124,7 @@
             <a class="navbar-brand" href="#">gisty~</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link bg-inverse" href="https://github.com/DanShrader/gisty" target="_blank">GitHub</a>
+          <a class="nav-link bg-inverse" href="https://github.com/DanShrader/gisty" target="_blank">GitHub Repo</a>
         </li>
       </ul>
         <span class="nav-item searchbox float-right"></span>
