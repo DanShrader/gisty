@@ -72,7 +72,7 @@
     </div>
     
     <div>
-      <p><%= description %></p>
+      <p class='descriptionView'><%= description %></p>
     </div>
       <%
         if (tags.length > 0) {
@@ -92,8 +92,8 @@
   <script type="text/template" id='template-edit-details'>
     <div class="row">
       <div class="col-8">
-        <button class="btn btn-sucess read-gist">Save</button>
-        <button class="btn btn-warning read-gist">Cancel</button>
+        <button class="btn btn-success save-gist">Save</button>
+        <button class="btn btn-warning cancel-gist">Cancel</button>
       </div>
       <div class="col">
         <a target="_blank" href="<%= html_url %>" class="btn btn-info float-right">github gist link</a>
@@ -101,10 +101,17 @@
     </div>
     
     <div>
-      <textarea><%= description %></textarea>
+      <textarea class="description"><%= description %></textarea>
     </div>
       <hr>
     <div class='files' style="padding:0px;margin:0px"></div>
+    <div style="padding:0px;margin:0px">
+    <div class="row">
+        <div class="col">
+          <button class="btn btn-success add-gist">Add File +</button>
+        </div>
+      </div>
+    </div>
   </script>
 
 

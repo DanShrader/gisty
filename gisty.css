@@ -147,3 +147,20 @@ code{
   padding: 0;
   margin: 0;
 }
+
+
+.description {
+    height: 220px;
+    width: 100%;
+    position: relative;
+    border: 1px solid;
+    border-color: #d8d8da;
+    background-color: #f7f7f9;
+    margin-top: 1em;
+    padding: .4em;
+    border-radius: calc(.25rem - 1px);
+}
+
+.descriptionView {
+  white-space: pre-wrap;
+}

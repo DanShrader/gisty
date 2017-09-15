@@ -35,10 +35,10 @@ var app = function () {
 		if (model && (method === 'update')) {
 			if (model.get('id') !== null) {
 				method = 'patch';
-				console.info("id this is a patch");
+				// console.info("id this is a patch");
 				model.url = urlWithKey('https://api.github.com/gists/' + model.get('id'), globalKey);
 			} else {
-				console.info("no id");
+				// console.info("no id");
 				model.url = urlWithKey('https://api.github.com/gists', globalKey);
 			}
 		}
@@ -57,6 +57,7 @@ var app = function () {
 		},
 		// Overwrite save function
 		save: function (attrs, options) {
+		  modelTaggin(this);
 			options || (options = {});
 			attrs || (attrs = _.clone(this.attributes));
 			_.forEach(attrs.files, function (file) {
@@ -83,10 +84,23 @@ var app = function () {
 			delete attrs.language;
 			delete attrs.tags;
 			delete attrs.user;
+			delete attrs.cleanUpdateDate;
 			options.data = JSON.stringify(attrs);
 			// Proxy the call to the original save function
 			return Backbone.Model.prototype.save.call(this, attrs, options);
 		}
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 	});
 
 	var GistCollection = Backbone.Collection.extend({
@@ -132,7 +146,12 @@ var app = function () {
 	var tagSummary = new Backbone.Collection();
 	var tagViewSummary = new Backbone.Collection();
 
-	gists.on("add", function (model) {
+
+
+
+
+
+  var modelTaggin = function(model){
 		_.forEach(model.get('files'), function (file) {
 			var exist = model.get('language');
 			model.set('language', " " + file.language + " " + exist);
@@ -148,34 +167,26 @@ var app = function () {
 			tagArray.push(part[0]);
 		});
 		model.set('tags', tagArray.join(" "));
-		
-		
-		
 		model.set('cleanUpdateDate',(new Date(model.get('updated_at')).yyyymmdd()));
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+  };
+
+
+
+
+
+
+
+	gists.on("add", function (model) {
+    modelTaggin(model);
 	});
 
-	gists.on('sync', function () {
+
+
+
+
+
+
+	var filtersAndTags = function () {
 		var fileTypeCollectionGrp = fileTypeCollection.groupBy(function (model) {
 			return model.get('language');
 		});
@@ -227,7 +238,17 @@ var app = function () {
 			});
 		});
 
-	});
+	}
+	
+	gists.on('sync',filtersAndTags);
+// 	gists.on('taggin',filtersAndTags);
+
+
+
+
+
+
+
 
 	var len = gists.length;
 	var i = 1;
@@ -261,6 +282,9 @@ var app = function () {
 		events: {
 			"click": "clicked"
 		},
+    initialize: function() {
+        this.listenTo(this.model, 'change', this.render);
+    },
 		clicked: function () {
 			$('.sidebar-nav .active').removeClass('active');
 			this.$el.addClass('active');
@@ -424,12 +448,17 @@ var app = function () {
 	  
 
 		ui: {
-			edit: '.edit-gist',
-			read: '.read-gist'
+			edit:   '.edit-gist',
+			save:   '.save-gist',
+			cancel: '.cancel-gist',
+			add:    '.add-gist',
+			desc:   'textarea.description'
 		},
 		events: {
-			"click @ui.edit": "editView",
-			"click @ui.read": "readView"
+			"click @ui.edit"  : "editView",
+			"click @ui.save"  : "saveView",
+			"click @ui.cancel": "readView",
+			"click @ui.add"   : "addGist"
 		},
 		
 		editView: function () {
@@ -442,7 +471,21 @@ var app = function () {
 		  this.render();
 		},
 			  
-	  
+	  saveView: function () {
+      // console.log('save button');
+      // console.log(this.ui.desc.val());
+      
+      this.model.set("description",this.ui.desc.val())
+      // console.log(files);
+      // console.log(this.model);
+      this.model.save();
+      
+      this.readView();
+		},
+		
+	  addGist: function () {
+      console.log('add button');
+		},
 	  
 	  
 	  
