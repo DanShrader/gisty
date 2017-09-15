@@ -61,13 +61,49 @@ var app = function () {
 			modelTaggin(this);
 			options || (options = {});
 			attrs || (attrs = _.clone(this.attributes));
-			_.forEach(attrs.files, function (file) {
-				delete file.filename;
-				delete file.raw_url;
-				delete file.type;
-				delete file.size;
-				file.content = 'tmp stuff';
+
+			console.log(attrs.files);
+
+			// 	_.forEach(attrs.files, function (file) {
+			// 		delete file.filename;
+			// 		delete file.raw_url;
+			// 		delete file.type;
+			// 		delete file.size;
+			// 		file.content = 'tmp stuff';
+			// 		console.log(file);
+			// 	});
+
+			var newFiles = {};
+			_.forEach(fileCollection.models, function (model) {
+				if (typeof (model) !== 'undefined') {
+
+					if (model.get('deleteFlag') === true) {
+						newFiles[model.get('filename')] = {};
+						model.destroy();
+					} else {
+
+						// if the file is renamed need to pass a blank object to remove
+						// https://developer.github.com/v3/gists/#edit-a-gist
+						if (model.get('nameChange') !== 'false' ) {
+							console.warn('name change', model);
+							newFiles[model.get('nameChange')] = {};
+						}
+
+						newFiles[model.get('filename')] = {
+							'content': model.get('content'),
+							'language': model.get('language')
+						};
+
+					}
+
+				}
 			});
+			console.log('newFiles');
+			console.log(newFiles);
+			console.log('newFiles');
+
+			attrs.files = newFiles;
+
 			// delete attrs.public
 			delete attrs.comments;
 			delete attrs.comments_url;
@@ -100,8 +136,13 @@ var app = function () {
 
 	var file = Backbone.Model.extend({
 		defaults: {
-			content: ""
-		}
+			content: "",
+			deleteFlag: false,
+			nameChange: 'false'
+		},
+		initialize: function() {
+       this.collection.on("change:filename", function(){this.set('nameChange',this.previous('filename'))}, this);
+    }
 	});
 
 	var FileCollection = Backbone.Collection.extend({
@@ -278,6 +319,7 @@ var app = function () {
 		tagName: 'li',
 		ui: {
 			copy: '.copy',
+			fileName: '.fileName',
 			codeEditor: 'textarea'
 		},
 		events: {
@@ -296,18 +338,26 @@ var app = function () {
 			setClipboard(this.model.get('content'));
 
 		},
-		change:function(){
-  	  this.template = '#template-edit-file';
-		  this.render()
-	  },
-		displayView:function(){
-  	  this.template = '#file';
-		  this.render()
-	  },
-	  updateCode:function(){
-	    console.log('code is:')
-	    console.log(this.ui.codeEditor.val())
-	  }
+		change: function () {
+			this.template = '#template-edit-file';
+			this.render()
+		},
+		displayView: function () {
+			this.template = '#file';
+			this.render()
+		},
+		updateCode: function () {
+			console.log('model is:')
+			console.log(this.model.attributes)
+			console.log('filename is:')
+			console.log(this.ui.fileName.val())
+			console.log('code is:')
+			console.log(this.ui.codeEditor.val())
+
+			this.model.set("filename", this.ui.fileName.val());
+			this.model.set("content", this.ui.codeEditor.val());
+
+		}
 	});
 
 	var filesView = Marionette.CollectionView.extend({
@@ -440,18 +490,18 @@ var app = function () {
 		editView: function () {
 			this.template = '#template-edit-details';
 			this.render();
-		  _.forEach(files.children._views ,function(childView){
-      	childView.change()
-      });
+			_.forEach(files.children._views, function (childView) {
+				childView.change()
+			});
 		},
 
 		readView: function () {
 			this.template = '#details';
 			// fileView.template= '#file';
 			this.render();
-		  _.forEach(files.children._views ,function(childView){
-      	childView.displayView()
-      });
+			_.forEach(files.children._views, function (childView) {
+				childView.displayView()
+			});
 
 		},
 
@@ -462,15 +512,17 @@ var app = function () {
 			this.model.set("description", this.ui.desc.val())
 			// console.log(files);
 			// console.log(this.model);
+
+			_.forEach(files.children._views, function (childView) {
+				childView.updateCode()
+			});
+
 			this.model.save();
-			
-			
-		  _.forEach(files.children._views ,function(childView){
-      	childView.updateCode()
-      });
-			
 
 			this.readView();
+
+			// fileCollection.models[0].set('deleteFlag',true)
+
 		},
 
 		addGist: function () {

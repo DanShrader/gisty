@@ -69,8 +69,9 @@
   <script type="text/template" id='template-edit-file'>
     <div class="card">
       <div class="card-header">
-        <h5 style="float:left;margin-top: 0.5rem;"><%= filename %></h5>
-        <button class="btn btn-primary copy" style="float:right">Copy</button>
+      
+        <input class="form-control mr-sm-2 float-left fileName" type="text" placeholder="Filename and extension" value="<%= filename %>">
+        
       </div>
       <div class="card-body edit-mode ">
         <textarea class="description"><%= content %></textarea>
