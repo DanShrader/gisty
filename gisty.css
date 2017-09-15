@@ -149,16 +149,29 @@ code{
 }
 
 
+.edit-mode, .description{
+  background-color: #fffff1;
+}
+
 .description {
-    height: 220px;
-    width: 100%;
-    position: relative;
-    border: 1px solid;
-    border-color: #d8d8da;
-    background-color: #f7f7f9;
-    margin-top: 1em;
-    padding: .4em;
-    border-radius: calc(.25rem - 1px);
+  height: 220px;
+  width: 100%;
+  position: relative;
+  border: 1px solid;
+  border-color: #d8d8da;
+  margin-top: 1em;
+  padding: .4em;
+  border-radius: calc(.25rem - 1px);
+}
+
+
+.card-body .description {
+  height: 300px;
+  border: none;
+  margin-top: 0;
+  padding: .4em;
+  border-radius: 0;
+  font-family: monospace;
 }
 
 .descriptionView {

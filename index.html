@@ -41,11 +41,65 @@
         <button class="btn btn-primary copy" style="float:right">Copy</button>
       </div>
       <div class="card-body">
-        <pre class="card-text"><code class="<%= language %>"><%= raw_code %></code></pre>
+        <pre class="card-text"><code class="<%= language %>"><%= content %></code></pre>
       </div>
     </div>
     <br>
   </script>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <script type="text/template" id='template-edit-file'>
+    <div class="card">
+      <div class="card-header">
+        <h5 style="float:left;margin-top: 0.5rem;"><%= filename %></h5>
+        <button class="btn btn-primary copy" style="float:right">Copy</button>
+      </div>
+      <div class="card-body edit-mode ">
+        <textarea class="description"><%= content %></textarea>
+      </div>
+    </div>
+    <br>
+  </script>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   
   <script type="text/template" id='item'>
     <p class='truncate'><%= description %></p>
@@ -81,7 +135,8 @@
             });
         }
       %>
-      <hr>
+    <br>
+    <br>
     <div class='files' style="padding:0px;margin:0px"></div>
   </script>
 
@@ -103,7 +158,8 @@
     <div>
       <textarea class="description"><%= description %></textarea>
     </div>
-      <hr>
+    <br>
+    <br>
     <div class='files' style="padding:0px;margin:0px"></div>
     <div style="padding:0px;margin:0px">
     <div class="row">

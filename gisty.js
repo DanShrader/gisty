@@ -1,17 +1,18 @@
-var app = function () {
-  
-  // Thanks
-  // https://stackoverflow.com/questions/3066586/get-string-in-yyyymmdd-format-from-js-date-object
-  Date.prototype.yyyymmdd = function() {
-    var mm = this.getMonth() + 1; // getMonth() is zero-based
-    var dd = this.getDate();
-  
-    return [this.getFullYear(),
-            (mm>9 ? '' : '0') + mm,
-            (dd>9 ? '' : '0') + dd
-           ].join('-');
-  };
+var radio = Backbone.Radio.channel('gisty');
 
+var app = function () {
+
+	// Thanks
+	// https://stackoverflow.com/questions/3066586/get-string-in-yyyymmdd-format-from-js-date-object
+	Date.prototype.yyyymmdd = function () {
+		var mm = this.getMonth() + 1; // getMonth() is zero-based
+		var dd = this.getDate();
+
+		return [this.getFullYear(),
+			(mm > 9 ? '' : '0') + mm,
+			(dd > 9 ? '' : '0') + dd
+		].join('-');
+	};
 
 	var globalKey = APIkey;
 
@@ -57,7 +58,7 @@ var app = function () {
 		},
 		// Overwrite save function
 		save: function (attrs, options) {
-		  modelTaggin(this);
+			modelTaggin(this);
 			options || (options = {});
 			attrs || (attrs = _.clone(this.attributes));
 			_.forEach(attrs.files, function (file) {
@@ -89,18 +90,7 @@ var app = function () {
 			// Proxy the call to the original save function
 			return Backbone.Model.prototype.save.call(this, attrs, options);
 		}
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+
 	});
 
 	var GistCollection = Backbone.Collection.extend({
@@ -110,7 +100,7 @@ var app = function () {
 
 	var file = Backbone.Model.extend({
 		defaults: {
-			raw_code: ""
+			content: ""
 		}
 	});
 
@@ -130,7 +120,7 @@ var app = function () {
 			type: 'GET',
 		}).done(function (response) {
 			// console.log(response);
-			file.set("raw_code", response);
+			file.set("content", response);
 			files.render();
 			$('pre code').each(function (i, block) {
 				hljs.highlightBlock(block);
@@ -146,12 +136,7 @@ var app = function () {
 	var tagSummary = new Backbone.Collection();
 	var tagViewSummary = new Backbone.Collection();
 
-
-
-
-
-
-  var modelTaggin = function(model){
+	var modelTaggin = function (model) {
 		_.forEach(model.get('files'), function (file) {
 			var exist = model.get('language');
 			model.set('language', " " + file.language + " " + exist);
@@ -167,24 +152,12 @@ var app = function () {
 			tagArray.push(part[0]);
 		});
 		model.set('tags', tagArray.join(" "));
-		model.set('cleanUpdateDate',(new Date(model.get('updated_at')).yyyymmdd()));
-  };
-
-
-
-
-
-
+		model.set('cleanUpdateDate', (new Date(model.get('updated_at')).yyyymmdd()));
+	};
 
 	gists.on("add", function (model) {
-    modelTaggin(model);
+		modelTaggin(model);
 	});
-
-
-
-
-
-
 
 	var filtersAndTags = function () {
 		var fileTypeCollectionGrp = fileTypeCollection.groupBy(function (model) {
@@ -239,16 +212,9 @@ var app = function () {
 		});
 
 	}
-	
-	gists.on('sync',filtersAndTags);
-// 	gists.on('taggin',filtersAndTags);
 
-
-
-
-
-
-
+	gists.on('sync', filtersAndTags);
+	// 	gists.on('taggin',filtersAndTags);
 
 	var len = gists.length;
 	var i = 1;
@@ -282,9 +248,9 @@ var app = function () {
 		events: {
 			"click": "clicked"
 		},
-    initialize: function() {
-        this.listenTo(this.model, 'change', this.render);
-    },
+		initialize: function () {
+			this.listenTo(this.model, 'change', this.render);
+		},
 		clicked: function () {
 			$('.sidebar-nav .active').removeClass('active');
 			this.$el.addClass('active');
@@ -311,10 +277,11 @@ var app = function () {
 		template: '#file',
 		tagName: 'li',
 		ui: {
-			copy: '.copy'
+			copy: '.copy',
+			codeEditor: 'textarea'
 		},
 		events: {
-			"click @ui.copy": "copy"
+			"click @ui.copy": "copy",
 		},
 		copy: function () {
 			function setClipboard(value) {
@@ -326,9 +293,21 @@ var app = function () {
 				document.execCommand("copy");
 				document.body.removeChild(tempInput);
 			}
-			setClipboard(this.model.get('raw_code'));
+			setClipboard(this.model.get('content'));
 
-		}
+		},
+		change:function(){
+  	  this.template = '#template-edit-file';
+		  this.render()
+	  },
+		displayView:function(){
+  	  this.template = '#file';
+		  this.render()
+	  },
+	  updateCode:function(){
+	    console.log('code is:')
+	    console.log(this.ui.codeEditor.val())
+	  }
 	});
 
 	var filesView = Marionette.CollectionView.extend({
@@ -443,59 +422,67 @@ var app = function () {
 	tags.render();
 
 	var detailView = Marionette.View.extend({
-	  
-	  
-	  
 
 		ui: {
-			edit:   '.edit-gist',
-			save:   '.save-gist',
+			edit: '.edit-gist',
+			save: '.save-gist',
 			cancel: '.cancel-gist',
-			add:    '.add-gist',
-			desc:   'textarea.description'
+			add: '.add-gist',
+			desc: 'textarea.description'
 		},
 		events: {
-			"click @ui.edit"  : "editView",
-			"click @ui.save"  : "saveView",
+			"click @ui.edit": "editView",
+			"click @ui.save": "saveView",
 			"click @ui.cancel": "readView",
-			"click @ui.add"   : "addGist"
+			"click @ui.add": "addGist"
 		},
-		
+
 		editView: function () {
-		  this.template= '#template-edit-details';
-		  this.render();
+			this.template = '#template-edit-details';
+			this.render();
+		  _.forEach(files.children._views ,function(childView){
+      	childView.change()
+      });
 		},
-			  
+
 		readView: function () {
-		  this.template= '#details';
-		  this.render();
+			this.template = '#details';
+			// fileView.template= '#file';
+			this.render();
+		  _.forEach(files.children._views ,function(childView){
+      	childView.displayView()
+      });
+
 		},
-			  
-	  saveView: function () {
-      // console.log('save button');
-      // console.log(this.ui.desc.val());
-      
-      this.model.set("description",this.ui.desc.val())
-      // console.log(files);
-      // console.log(this.model);
-      this.model.save();
-      
-      this.readView();
+
+		saveView: function () {
+			// console.log('save button');
+			// console.log(this.ui.desc.val());
+
+			this.model.set("description", this.ui.desc.val())
+			// console.log(files);
+			// console.log(this.model);
+			this.model.save();
+			
+			
+		  _.forEach(files.children._views ,function(childView){
+      	childView.updateCode()
+      });
+			
+
+			this.readView();
 		},
-		
-	  addGist: function () {
-      console.log('add button');
+
+		addGist: function () {
+			console.log('add button');
 		},
-	  
-	  
-	  
-	  
+
 		template: '#details',
 		onRender: function () {
 			// console.warn(fileCollection.length)
-		// 	this.el.append(files.el);
+			// 	this.el.append(files.el);
 
-      this.$el.find('.files').append(files.el);
+			this.$el.find('.files').append(files.el);
 		}
 
 	});
@@ -507,10 +494,10 @@ var app = function () {
 	$("#language").html(languages.el);
 	$("#tags").html(tags.el);
 	$(".searchbox").html(searchView.el);
-	
-	
+
 	window.gists = gists;
-	
+	window.fileCollection = fileCollection;
+	window.files = files;
 }
 
 var APIkey = localStorage.getItem("gistyAPIKey") || "";
