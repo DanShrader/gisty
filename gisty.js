@@ -61,18 +61,6 @@ var app = function () {
 			modelTaggin(this);
 			options || (options = {});
 			attrs || (attrs = _.clone(this.attributes));
-
-			console.log(attrs.files);
-
-			// 	_.forEach(attrs.files, function (file) {
-			// 		delete file.filename;
-			// 		delete file.raw_url;
-			// 		delete file.type;
-			// 		delete file.size;
-			// 		file.content = 'tmp stuff';
-			// 		console.log(file);
-			// 	});
-
 			var newFiles = {};
 			_.forEach(fileCollection.models, function (model) {
 				if (typeof (model) !== 'undefined') {
@@ -84,8 +72,8 @@ var app = function () {
 
 						// if the file is renamed need to pass a blank object to remove
 						// https://developer.github.com/v3/gists/#edit-a-gist
-						if (model.get('nameChange') !== 'false' ) {
-							console.warn('name change', model);
+						if (model.get('nameChange') !== 'false') {
+						// 	console.warn('name change', model);
 							newFiles[model.get('nameChange')] = {};
 						}
 
@@ -98,9 +86,9 @@ var app = function () {
 
 				}
 			});
-			console.log('newFiles');
-			console.log(newFiles);
-			console.log('newFiles');
+		// 	console.log('newFiles');
+		// 	console.log(newFiles);
+		// 	console.log('newFiles');
 
 			attrs.files = newFiles;
 
@@ -140,9 +128,11 @@ var app = function () {
 			deleteFlag: false,
 			nameChange: 'false'
 		},
-		initialize: function() {
-       this.collection.on("change:filename", function(){this.set('nameChange',this.previous('filename'))}, this);
-    }
+		initialize: function () {
+			this.collection.on("change:filename", function () {
+				this.set('nameChange', this.previous('filename'));
+			}, this);
+		}
 	});
 
 	var FileCollection = Backbone.Collection.extend({
@@ -320,10 +310,12 @@ var app = function () {
 		ui: {
 			copy: '.copy',
 			fileName: '.fileName',
-			codeEditor: 'textarea'
+			codeEditor: 'textarea',
+			deleteFile: '.deleteFile'
 		},
 		events: {
 			"click @ui.copy": "copy",
+			"click @ui.deleteFile": "flagForDelete"
 		},
 		copy: function () {
 			function setClipboard(value) {
@@ -340,23 +332,32 @@ var app = function () {
 		},
 		change: function () {
 			this.template = '#template-edit-file';
-			this.render()
+			this.render();
+			this.delegateEvents()
 		},
 		displayView: function () {
 			this.template = '#file';
 			this.render()
+			this.delegateEvents()
 		},
 		updateCode: function () {
-			console.log('model is:')
-			console.log(this.model.attributes)
-			console.log('filename is:')
-			console.log(this.ui.fileName.val())
-			console.log('code is:')
-			console.log(this.ui.codeEditor.val())
-
+		// 	console.log('model is:')
+		// 	console.log(this.model.attributes)
+		// 	console.log('filename is:')
+		// 	console.log(this.ui.fileName.val())
+		// 	console.log('code is:')
+		// 	console.log(this.ui.codeEditor.val())
+		// 	console.log(this.ui.fileName)
+    //  Need incase the file is flagged for deletion
+    if(this.ui.fileName !== '.fileName'){
 			this.model.set("filename", this.ui.fileName.val());
 			this.model.set("content", this.ui.codeEditor.val());
+    }
 
+		},
+		flagForDelete: function(){
+		  this.model.set('deleteFlag',true);
+		  this.destroy();
 		}
 	});
 

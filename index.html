@@ -69,9 +69,14 @@
   <script type="text/template" id='template-edit-file'>
     <div class="card">
       <div class="card-header">
-      
-        <input class="form-control mr-sm-2 float-left fileName" type="text" placeholder="Filename and extension" value="<%= filename %>">
-        
+        <div class="row">
+          <div class="col-8">
+            <input class="form-control mr-sm-2 float-left fileName" type="text" placeholder="Filename and extension" value="<%= filename %>">
+          </div>
+          <div class="col">
+            <button class="btn btn-danger deleteFile float-right">Delete</button>
+          </div>
+        </div>
       </div>
       <div class="card-body edit-mode ">
         <textarea class="description"><%= content %></textarea>
