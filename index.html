@@ -41,15 +41,75 @@
         <button class="btn btn-primary copy" style="float:right">Copy</button>
       </div>
       <div class="card-body">
-        <pre class="card-text"><code class="<%= language %>"><%= raw_code %></code></pre>
+        <pre class="card-text"><code class="<%= language %>"><%= content %></code></pre>
       </div>
     </div>
     <br>
   </script>
   
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <script type="text/template" id='template-edit-file'>
+    <div class="card">
+      <div class="card-header">
+        <div class="row">
+          <div class="col-8">
+            <input class="form-control mr-sm-2 float-left fileName" type="text" placeholder="Filename and extension" value="<%= filename %>">
+          </div>
+          <div class="col">
+            <button class="btn btn-danger deleteFile float-right">Delete</button>
+          </div>
+        </div>
+      </div>
+      <div class="card-body edit-mode ">
+        <textarea class="description"><%= content %></textarea>
+      </div>
+    </div>
+    <br>
+  </script>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   <script type="text/template" id='item'>
     <p class='truncate'><%= description %></p>
-    <p style='font-height:8px !important'><%= updated_at %></p>
+    <p style='font-height:8px !important'><%= cleanUpdateDate %></p>
     
     <%
       if (tags.length > 0) {
@@ -63,6 +123,7 @@
   <script type="text/template" id='details'>
     <div class="row">
       <div class="col-8">
+        <button class="btn btn-warning edit-gist">Edit</button>
         
       </div>
       <div class="col">
@@ -70,8 +131,8 @@
       </div>
     </div>
     
-    <div class="row">
-      <p><%= description %></p>
+    <div>
+      <p class='descriptionView'><%= description %></p>
     </div>
       <%
         if (tags.length > 0) {
@@ -80,9 +141,50 @@
             });
         }
       %>
-      <hr>
+    <br>
+    <br>
     <div class='files' style="padding:0px;margin:0px"></div>
   </script>
+
+
+
+
+
+  <script type="text/template" id='template-edit-details'>
+    <div class="row">
+      <div class="col-8">
+        <button class="btn btn-success save-gist">Save</button>
+        <button class="btn btn-warning cancel-gist">Cancel</button>
+      </div>
+      <div class="col">
+        <a target="_blank" href="<%= html_url %>" class="btn btn-info float-right">github gist link</a>
+      </div>
+    </div>
+    
+    <div>
+      <textarea class="description"><%= description %></textarea>
+    </div>
+    <br>
+    <br>
+    <div class='files' style="padding:0px;margin:0px"></div>
+    <div style="padding:0px;margin:0px">
+    <div class="row">
+        <div class="col">
+          <button class="btn btn-success add-gist">Add File +</button>
+        </div>
+      </div>
+    </div>
+  </script>
+
+
+
+
+
+
+
+
+
+
 
   <body>
     <nav class="navbar-inverse fixed-top bg-inverse">
@@ -91,7 +193,7 @@
             <a class="navbar-brand" href="#">gisty~</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link bg-inverse" href="https://github.com/DanShrader/gisty" target="_blank">GitHub</a>
+          <a class="nav-link bg-inverse" href="https://github.com/DanShrader/gisty" target="_blank">GitHub Repo</a>
         </li>
       </ul>
         <span class="nav-item searchbox float-right"></span>

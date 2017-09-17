@@ -135,10 +135,49 @@ code{
 }
 
 .list-group-item:first-child,.list-group-item:last-child {
-    border-radius: 0rem;
+    border-radius: 0;
 }
 
 .list-group-item{
   display: block;
 }
 
+.files ul, .files ul li{
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+
+.edit-mode, .description{
+  background-color: #fffff1;
+}
+
+.description {
+  height: 220px;
+  width: 100%;
+  position: relative;
+  border: 1px solid;
+  border-color: #d8d8da;
+  margin-top: 1em;
+  padding: .4em;
+  border-radius: calc(.25rem - 1px);
+}
+
+
+.card-body .description {
+  height: 300px;
+  border: none;
+  margin-top: 0;
+  padding: .4em;
+  border-radius: 0;
+  font-family: monospace;
+}
+
+.descriptionView {
+  white-space: pre-wrap;
+}
+
+.deleteFlag{
+  background-color: red !important
+}

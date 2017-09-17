@@ -17,6 +17,8 @@ The cool thing about this app it the ***all*** of the data is stored in GitHub s
 
 With my favorite online gist editor going away and its replacement not syncing to GitHub I figured while waiting for hurricane Irma to pass I'd write up a quick replacement for myself. After writing most of it I thought to  share it for those in similar situations.
 
+You can create one [here](https://github.com/settings/tokens) on your GitHub account.
+
 ### Todo
 
 * [ ] Get the editor functions working

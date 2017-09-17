@@ -1,4 +1,22 @@
+var radio = Backbone.Radio.channel('gisty');
+
 var app = function () {
+
+	var settings = {
+		mode: "view"
+	}
+
+	// Thanks
+	// https://stackoverflow.com/questions/3066586/get-string-in-yyyymmdd-format-from-js-date-object
+	Date.prototype.yyyymmdd = function () {
+		var mm = this.getMonth() + 1; // getMonth() is zero-based
+		var dd = this.getDate();
+
+		return [this.getFullYear(),
+			(mm > 9 ? '' : '0') + mm,
+			(dd > 9 ? '' : '0') + dd
+		].join('-');
+	};
 
 	var globalKey = APIkey;
 
@@ -22,10 +40,10 @@ var app = function () {
 		if (model && (method === 'update')) {
 			if (model.get('id') !== null) {
 				method = 'patch';
-				console.info("id this is a patch");
+				// console.info("id this is a patch");
 				model.url = urlWithKey('https://api.github.com/gists/' + model.get('id'), globalKey);
 			} else {
-				console.info("no id");
+				// console.info("no id");
 				model.url = urlWithKey('https://api.github.com/gists', globalKey);
 			}
 		}
@@ -44,15 +62,40 @@ var app = function () {
 		},
 		// Overwrite save function
 		save: function (attrs, options) {
+			modelTaggin(this);
 			options || (options = {});
 			attrs || (attrs = _.clone(this.attributes));
-			_.forEach(attrs.files, function (file) {
-				delete file.filename;
-				delete file.raw_url;
-				delete file.type;
-				delete file.size;
-				file.content = 'tmp stuff';
+			var newFiles = {};
+			_.forEach(fileCollection.models, function (model) {
+				if (typeof (model) !== 'undefined') {
+
+					if (model.get('deleteFlag') === true) {
+						newFiles[model.get('filename')] = {};
+						model.destroy();
+					} else {
+
+						// if the file is renamed need to pass a blank object to remove
+						// https://developer.github.com/v3/gists/#edit-a-gist
+						if (model.get('nameChange') !== 'false') {
+							// 	console.warn('name change', model);
+							newFiles[model.get('nameChange')] = {};
+						}
+
+						newFiles[model.get('filename')] = {
+							'content': model.get('content'),
+							'language': model.get('language')
+						};
+
+					}
+
+				}
 			});
+			// 	console.log('newFiles');
+			// 	console.log(newFiles);
+			// 	console.log('newFiles');
+
+			attrs.files = newFiles;
+
 			// delete attrs.public
 			delete attrs.comments;
 			delete attrs.comments_url;
@@ -70,10 +113,12 @@ var app = function () {
 			delete attrs.language;
 			delete attrs.tags;
 			delete attrs.user;
+			delete attrs.cleanUpdateDate;
 			options.data = JSON.stringify(attrs);
 			// Proxy the call to the original save function
 			return Backbone.Model.prototype.save.call(this, attrs, options);
 		}
+
 	});
 
 	var GistCollection = Backbone.Collection.extend({
@@ -83,12 +128,19 @@ var app = function () {
 
 	var file = Backbone.Model.extend({
 		defaults: {
-			raw_code: ""
+			content: "",
+			deleteFlag: false,
+			nameChange: 'false'
+		},
+		initialize: function () {
+			this.collection.on("change:filename", function () {
+				this.set('nameChange', this.previous('filename'));
+			}, this);
 		}
 	});
 
 	var FileCollection = Backbone.Collection.extend({
-		model: file,
+		model: file
 	});
 
 	var fileCollection = new FileCollection();
@@ -96,20 +148,26 @@ var app = function () {
 
 	fileCollection.on("add", function (file) {
 		// console.warn("Ahoy " + file.get("filename") + "!");
-		var url = file.get("raw_url") + '?' + globalKey;
-		// console.warn(url);
-		$.ajax({
-			url: url,
-			type: 'GET',
-		}).done(function (response) {
-			// console.log(response);
-			file.set("raw_code", response);
-			files.render();
-			$('pre code').each(function (i, block) {
-				hljs.highlightBlock(block);
+
+		if (typeof (file.get("raw_url")) !== 'undefined') {
+
+			var url = file.get("raw_url") + '?' + globalKey;
+			// console.warn(url);
+
+			$.ajax({
+				url: url,
+				type: 'GET',
+			}).done(function (response) {
+				// console.log(response);
+				file.set("content", response);
+				files.render();
+				$('pre code').each(function (i, block) {
+					hljs.highlightBlock(block);
+				});
+				// https://highlightjs.org/
 			});
-			// https://highlightjs.org/
-		});
+
+		}
 
 	});
 
@@ -119,7 +177,7 @@ var app = function () {
 	var tagSummary = new Backbone.Collection();
 	var tagViewSummary = new Backbone.Collection();
 
-	gists.on("add", function (model) {
+	var modelTaggin = function (model) {
 		_.forEach(model.get('files'), function (file) {
 			var exist = model.get('language');
 			model.set('language', " " + file.language + " " + exist);
@@ -135,9 +193,14 @@ var app = function () {
 			tagArray.push(part[0]);
 		});
 		model.set('tags', tagArray.join(" "));
+		model.set('cleanUpdateDate', (new Date(model.get('updated_at')).yyyymmdd()));
+	};
+
+	gists.on("add", function (model) {
+		modelTaggin(model);
 	});
 
-	gists.on('sync', function () {
+	var filtersAndTags = function () {
 		var fileTypeCollectionGrp = fileTypeCollection.groupBy(function (model) {
 			return model.get('language');
 		});
@@ -189,7 +252,10 @@ var app = function () {
 			});
 		});
 
-	});
+	}
+
+	gists.on('sync', filtersAndTags);
+	// 	gists.on('taggin',filtersAndTags);
 
 	var len = gists.length;
 	var i = 1;
@@ -223,8 +289,12 @@ var app = function () {
 		events: {
 			"click": "clicked"
 		},
+		initialize: function () {
+			this.listenTo(this.model, 'change', this.render);
+		},
 		clicked: function () {
 			$('.sidebar-nav .active').removeClass('active');
+			settings.mode = "view"
 			this.$el.addClass('active');
 			fileCollection.reset();
 			_.forEach(this.model.get("files"), function (file) {
@@ -239,20 +309,45 @@ var app = function () {
 		className: "sidebar-nav list-group",
 		tagName: 'ul',
 		childView: ChildView,
-		collection: gists
+		collection: gists,
 	});
 
 	var gistList = new CollectionView();
 	gistList.render();
 
 	var fileView = Marionette.View.extend({
-		template: '#file',
+
+		onBeforeRender: function () {
+
+		// 	console.log(this.template)
+			tmp = '#file'
+			if (settings.mode !== "view" && typeof (settings.mode) !== "undefined") {
+				tmp = '#template-edit-file'
+			}
+			this.template = tmp
+			
+			if (this.model.get('deleteFlag') === true){
+  			this.$el.hide()
+			} else {
+  			this.$el.show()
+			}
+			
+			
+		},
+
+		template:'#file',
+		tagName: 'li',
 		ui: {
-			copy: '.copy'
+			copy: '.copy',
+			fileName: '.fileName',
+			codeEditor: 'textarea',
+			deleteFile: '.deleteFile'
 		},
 		events: {
-			"click @ui.copy": "copy"
+			"click @ui.copy": "copy",
+			"click @ui.deleteFile": "flagForDelete"
 		},
+
 		copy: function () {
 			function setClipboard(value) {
 				var tempInput = document.createElement("textarea");
@@ -263,8 +358,42 @@ var app = function () {
 				document.execCommand("copy");
 				document.body.removeChild(tempInput);
 			}
-			setClipboard(this.model.get('raw_code'));
+			setClipboard(this.model.get('content'));
 
+		},
+		change: function () {
+			settings.mode = 'edit'
+			this.template = '#template-edit-file';
+			this.render();
+			this.delegateEvents()
+		},
+		displayView: function () {
+			settings.mode = 'view'
+			this.template = '#file';
+			this.render()
+			this.delegateEvents()
+		},
+		updateCode: function () {
+			// 	console.log('model is:')
+			// 	console.log(this.model.attributes)
+			// 	console.log('filename is:')
+			// 	console.log(this.ui.fileName.val())
+			// 	console.log('code is:')
+			// 	console.log(this.ui.codeEditor.val())
+			// 	console.log(this.ui.fileName)
+			//  Need incase the file is flagged for deletion
+			if (this.ui.fileName !== '.fileName') {
+				this.model.set("filename", this.ui.fileName.val());
+				this.model.set("content", this.ui.codeEditor.val());
+			}
+
+		},
+		flagForDelete: function () {
+			this.model.set('deleteFlag', true);
+			
+			this.$el.hide()
+			
+		// 	this.destroy();
 		}
 	});
 
@@ -272,7 +401,10 @@ var app = function () {
 		className: "",
 		tagName: 'ul',
 		childView: fileView,
-		collection: fileCollection
+		collection: fileCollection,
+		initilize: function () {
+			settings.mode = 'view'
+		}
 	});
 
 	var files = new filesView();
@@ -380,10 +512,97 @@ var app = function () {
 	tags.render();
 
 	var detailView = Marionette.View.extend({
+		// status: "viewOnly",
+
+		ui: {
+			edit: '.edit-gist',
+			save: '.save-gist',
+			cancel: '.cancel-gist',
+			add: '.add-gist',
+			desc: 'textarea.description'
+		},
+		events: {
+			"click @ui.edit": "editView",
+			"click @ui.save": "saveView",
+			"click @ui.cancel": "readView",
+			"click @ui.add": "addGist"
+		},
+
 		template: '#details',
+		
+		onBeforeRender: function () {
+		// 	console.log(this.template)
+			tmp = '#details'
+			if (settings.mode !== "view" && typeof (settings.mode) !== "undefined") {
+				tmp = '#template-edit-details'
+			}
+			this.template = tmp
+		},
+
+		editView: function () {
+			// 	this.template = '#template-edit-details';
+			settings.mode = "edit";
+			this.render();
+			// 	this.status = "editMode"
+			_.forEach(files.children._views, function (childView) {
+				childView.change()
+			});
+		},
+
+		readView: function () {
+			// 	this.template = '#details';
+			settings.mode = "view";
+			// fileView.template= '#file';
+			this.render();
+			// 	this.status = "viewOnly"
+
+      // remove delete flage if applicable for the files
+			fileCollection.forEach(function(model){
+				model.set('deleteFlag', false);
+			});
+				
+				
+			_.forEach(files.children._views, function (childView) {
+				
+				
+				childView.displayView()
+			});
+
+		},
+
+		saveView: function () {
+			// console.log('save button');
+			// console.log(this.ui.desc.val());
+
+			this.model.set("description", this.ui.desc.val())
+			// console.log(files);
+			// console.log(this.model);
+
+			_.forEach(files.children._views, function (childView) {
+				childView.updateCode()
+			});
+
+			this.model.save();
+
+			this.readView();
+
+			// fileCollection.models[0].set('deleteFlag',true)
+
+		},
+
+		addGist: function () {
+			console.log('add button');
+			fileCollection.add({
+				"filename": "_" + new Date() + ".txt",
+				content: "Some awesome Code"
+			})
+		},
+
 		onRender: function () {
 			// console.warn(fileCollection.length)
-			this.el.append(files.el);
+			// 	this.el.append(files.el);
+
+			this.$el.find('.files').append(files.el);
 		}
 
 	});
@@ -395,10 +614,10 @@ var app = function () {
 	$("#language").html(languages.el);
 	$("#tags").html(tags.el);
 	$(".searchbox").html(searchView.el);
-	
-	
+
 	window.gists = gists;
-	
+	window.fileCollection = fileCollection;
+	window.files = files;
 }
 
 var APIkey = localStorage.getItem("gistyAPIKey") || "";
