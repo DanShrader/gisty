@@ -41,7 +41,7 @@
         <button class="btn btn-primary copy" style="float:right">Copy</button>
       </div>
       <div class="card-body">
-        <pre class="card-text"><code class="<%= language %>"><%= content %></code></pre>
+        <pre class="card-text"><code class="<%= language %>"><%= _.unescape(content.replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll("&","&amp;")) %></code></pre>
       </div>
     </div>
     <br>
