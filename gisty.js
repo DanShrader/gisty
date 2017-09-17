@@ -1,3 +1,10 @@
+// thanks  https://stackoverflow.com/questions/1144783/how-to-replace-all-occurrences-of-a-string-in-javascript
+String.prototype.replaceAll = function(search, replacement) {
+    var target = this;
+    return target.replace(new RegExp(search, 'g'), replacement);
+};
+
+
 var radio = Backbone.Radio.channel('gisty');
 
 var app = function () {
