@@ -2,6 +2,10 @@ var radio = Backbone.Radio.channel('gisty');
 
 var app = function () {
 
+	var settings = {
+		mode: "view"
+	}
+
 	// Thanks
 	// https://stackoverflow.com/questions/3066586/get-string-in-yyyymmdd-format-from-js-date-object
 	Date.prototype.yyyymmdd = function () {
@@ -73,7 +77,7 @@ var app = function () {
 						// if the file is renamed need to pass a blank object to remove
 						// https://developer.github.com/v3/gists/#edit-a-gist
 						if (model.get('nameChange') !== 'false') {
-						// 	console.warn('name change', model);
+							// 	console.warn('name change', model);
 							newFiles[model.get('nameChange')] = {};
 						}
 
@@ -86,9 +90,9 @@ var app = function () {
 
 				}
 			});
-		// 	console.log('newFiles');
-		// 	console.log(newFiles);
-		// 	console.log('newFiles');
+			// 	console.log('newFiles');
+			// 	console.log(newFiles);
+			// 	console.log('newFiles');
 
 			attrs.files = newFiles;
 
@@ -136,7 +140,7 @@ var app = function () {
 	});
 
 	var FileCollection = Backbone.Collection.extend({
-		model: file,
+		model: file
 	});
 
 	var fileCollection = new FileCollection();
@@ -144,20 +148,26 @@ var app = function () {
 
 	fileCollection.on("add", function (file) {
 		// console.warn("Ahoy " + file.get("filename") + "!");
-		var url = file.get("raw_url") + '?' + globalKey;
-		// console.warn(url);
-		$.ajax({
-			url: url,
-			type: 'GET',
-		}).done(function (response) {
-			// console.log(response);
-			file.set("content", response);
-			files.render();
-			$('pre code').each(function (i, block) {
-				hljs.highlightBlock(block);
+
+		if (typeof (file.get("raw_url")) !== 'undefined') {
+
+			var url = file.get("raw_url") + '?' + globalKey;
+			// console.warn(url);
+
+			$.ajax({
+				url: url,
+				type: 'GET',
+			}).done(function (response) {
+				// console.log(response);
+				file.set("content", response);
+				files.render();
+				$('pre code').each(function (i, block) {
+					hljs.highlightBlock(block);
+				});
+				// https://highlightjs.org/
 			});
-			// https://highlightjs.org/
-		});
+
+		}
 
 	});
 
@@ -284,6 +294,7 @@ var app = function () {
 		},
 		clicked: function () {
 			$('.sidebar-nav .active').removeClass('active');
+			settings.mode = "view"
 			this.$el.addClass('active');
 			fileCollection.reset();
 			_.forEach(this.model.get("files"), function (file) {
@@ -298,14 +309,33 @@ var app = function () {
 		className: "sidebar-nav list-group",
 		tagName: 'ul',
 		childView: ChildView,
-		collection: gists
+		collection: gists,
 	});
 
 	var gistList = new CollectionView();
 	gistList.render();
 
 	var fileView = Marionette.View.extend({
-		template: '#file',
+
+		onBeforeRender: function () {
+
+		// 	console.log(this.template)
+			tmp = '#file'
+			if (settings.mode !== "view" && typeof (settings.mode) !== "undefined") {
+				tmp = '#template-edit-file'
+			}
+			this.template = tmp
+			
+			if (this.model.get('deleteFlag') === true){
+  			this.$el.hide()
+			} else {
+  			this.$el.show()
+			}
+			
+			
+		},
+
+		template:'#file',
 		tagName: 'li',
 		ui: {
 			copy: '.copy',
@@ -317,6 +347,7 @@ var app = function () {
 			"click @ui.copy": "copy",
 			"click @ui.deleteFile": "flagForDelete"
 		},
+
 		copy: function () {
 			function setClipboard(value) {
 				var tempInput = document.createElement("textarea");
@@ -331,33 +362,38 @@ var app = function () {
 
 		},
 		change: function () {
+			settings.mode = 'edit'
 			this.template = '#template-edit-file';
 			this.render();
 			this.delegateEvents()
 		},
 		displayView: function () {
+			settings.mode = 'view'
 			this.template = '#file';
 			this.render()
 			this.delegateEvents()
 		},
 		updateCode: function () {
-		// 	console.log('model is:')
-		// 	console.log(this.model.attributes)
-		// 	console.log('filename is:')
-		// 	console.log(this.ui.fileName.val())
-		// 	console.log('code is:')
-		// 	console.log(this.ui.codeEditor.val())
-		// 	console.log(this.ui.fileName)
-    //  Need incase the file is flagged for deletion
-    if(this.ui.fileName !== '.fileName'){
-			this.model.set("filename", this.ui.fileName.val());
-			this.model.set("content", this.ui.codeEditor.val());
-    }
+			// 	console.log('model is:')
+			// 	console.log(this.model.attributes)
+			// 	console.log('filename is:')
+			// 	console.log(this.ui.fileName.val())
+			// 	console.log('code is:')
+			// 	console.log(this.ui.codeEditor.val())
+			// 	console.log(this.ui.fileName)
+			//  Need incase the file is flagged for deletion
+			if (this.ui.fileName !== '.fileName') {
+				this.model.set("filename", this.ui.fileName.val());
+				this.model.set("content", this.ui.codeEditor.val());
+			}
 
 		},
-		flagForDelete: function(){
-		  this.model.set('deleteFlag',true);
-		  this.destroy();
+		flagForDelete: function () {
+			this.model.set('deleteFlag', true);
+			
+			this.$el.hide()
+			
+		// 	this.destroy();
 		}
 	});
 
@@ -365,7 +401,10 @@ var app = function () {
 		className: "",
 		tagName: 'ul',
 		childView: fileView,
-		collection: fileCollection
+		collection: fileCollection,
+		initilize: function () {
+			settings.mode = 'view'
+		}
 	});
 
 	var files = new filesView();
@@ -473,6 +512,7 @@ var app = function () {
 	tags.render();
 
 	var detailView = Marionette.View.extend({
+		// status: "viewOnly",
 
 		ui: {
 			edit: '.edit-gist',
@@ -488,19 +528,43 @@ var app = function () {
 			"click @ui.add": "addGist"
 		},
 
+		template: '#details',
+		
+		onBeforeRender: function () {
+		// 	console.log(this.template)
+			tmp = '#details'
+			if (settings.mode !== "view" && typeof (settings.mode) !== "undefined") {
+				tmp = '#template-edit-details'
+			}
+			this.template = tmp
+		},
+
 		editView: function () {
-			this.template = '#template-edit-details';
+			// 	this.template = '#template-edit-details';
+			settings.mode = "edit";
 			this.render();
+			// 	this.status = "editMode"
 			_.forEach(files.children._views, function (childView) {
 				childView.change()
 			});
 		},
 
 		readView: function () {
-			this.template = '#details';
+			// 	this.template = '#details';
+			settings.mode = "view";
 			// fileView.template= '#file';
 			this.render();
+			// 	this.status = "viewOnly"
+
+      // remove delete flage if applicable for the files
+			fileCollection.forEach(function(model){
+				model.set('deleteFlag', false);
+			});
+				
+				
 			_.forEach(files.children._views, function (childView) {
+				
+				
 				childView.displayView()
 			});
 
@@ -528,9 +592,12 @@ var app = function () {
 
 		addGist: function () {
 			console.log('add button');
+			fileCollection.add({
+				"filename": "_" + new Date() + ".txt",
+				content: "Some awesome Code"
+			})
 		},
 
-		template: '#details',
 		onRender: function () {
 			// console.warn(fileCollection.length)
 			// 	this.el.append(files.el);
