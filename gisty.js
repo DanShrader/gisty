@@ -484,10 +484,12 @@ var app = function () {
 		className: 'form-inline',
 		ui: {
 			searchBTN: '.btn',
+			newGist: '.new-gist',
 			searchInput: '.form-control'
 		},
 		events: {
-			"click @ui.searchBTN": "filter"
+			"click @ui.searchBTN": "filter",
+			"click @ui.newGist": "newGist"
 		},
 		filter: function (e) {
 			e.preventDefault();
@@ -500,6 +502,10 @@ var app = function () {
 				preventRender: true
 			});
 			gistList.render();
+		},
+		newGist: function(){
+		  console.log('new clicked');
+		  
 		}
 	});
 
