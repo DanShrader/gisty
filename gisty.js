@@ -67,6 +67,27 @@ var app = function () {
 			language: "",
 			tags: " "
 		},
+    destroy: function (attrs, options) {
+        // var opts = _.extend({url: '/destroy/' + this.id}, options || {});
+        
+        
+        var alteredUrl = this.get("url") + '?access_token=' + globalKey;
+        // console.log(alteredUrl);
+        // console.log(this.id);
+        // console.log(this);
+        var opts = _.extend({url: alteredUrl});
+        
+        
+        
+        // console.warn('the destroy ovveride called');
+        // console.warn(options);
+        // console.warn(attrs);
+        return Backbone.Model.prototype.destroy.call(this, opts);
+        // return Backbone.Model.prototype.destroy.call();
+    },
+		
+		
+		
 		// Overwrite save function
 		save: function (attrs, options) {
 			modelTaggin(this);
@@ -523,6 +544,7 @@ var app = function () {
 
 		ui: {
 			edit: '.edit-gist',
+			deleteGists: '.deleteGists',
 			save: '.save-gist',
 			cancel: '.cancel-gist',
 			add: '.add-gist',
@@ -530,6 +552,7 @@ var app = function () {
 		},
 		events: {
 			"click @ui.edit": "editView",
+			"click @ui.deleteGists": "deleteGists",
 			"click @ui.save": "saveView",
 			"click @ui.cancel": "readView",
 			"click @ui.add": "addGist"
@@ -554,6 +577,19 @@ var app = function () {
 			_.forEach(files.children._views, function (childView) {
 				childView.change()
 			});
+		},
+		
+		deleteGists: function () {
+			// 	this.template = '#template-edit-details';
+      // console.warn('deleting the gist id: ',this.model.get('id'))
+      
+      var conf = confirm('About to delete. Proceed?')
+      
+      if(conf === true){
+        this.model.destroy();
+        this.$el.html('<h1>Deleted the gist</h1>');
+      }
+      
 		},
 
 		readView: function () {
