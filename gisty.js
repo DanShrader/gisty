@@ -156,6 +156,7 @@ var app = function () {
 			delete attrs.tags;
 			delete attrs.user;
 			delete attrs.cleanUpdateDate;
+			delete attrs.intUpdateDate;
 			options.data = JSON.stringify(attrs);
 
 			// 	console.log(options);
@@ -169,6 +170,10 @@ var app = function () {
 	var GistCollection = Backbone.Collection.extend({
 		model: model,
 		url: 'https://api.github.com/gists'
+		,comparator: function (model) {
+			return -model.get('intUpdateDate');
+		}
+
 	});
 
 	var file = Backbone.Model.extend({
@@ -239,6 +244,7 @@ var app = function () {
 		});
 		model.set('tags', tagArray.join(" "));
 		model.set('cleanUpdateDate', (new Date(model.get('updated_at')).yyyymmdd()));
+		model.set('intUpdateDate', (new Date(model.get('updated_at')).toInt()));
 	};
 
 	gists.on("add", function (model) {
@@ -355,7 +361,13 @@ var app = function () {
 		tagName: 'ul',
 		childView: ChildView,
 		collection: gists,
-		reorderOnSort: true
+		reorderOnSort:   true,
+		viewComparator: -'intUpdateDate'
+		
+		
+		
+		
+		
 	});
 
 	var gistList = new CollectionView();
@@ -673,11 +685,16 @@ var app = function () {
 				//THANKS https://stackoverflow.com/questions/14942592/backbone-collection-create-success
 				var newGist;
 				newGist = gists.create({
-					'description': this.ui.desc.val()
+					'description': this.ui.desc.val(),
+						
+
+		
+'intUpdateDate': new Date().toInt()
 				}, {
 					success: function () {
 						// console.log(newGist);
 						// console.log(newGist.get('id'));
+						newGist.set({'intUpdateDate': new Date().toInt()})
 						// do some stuff here
 					}
 				});
