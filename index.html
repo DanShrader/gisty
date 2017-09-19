@@ -17,6 +17,7 @@
     <script src='https://cdnjs.cloudflare.com/ajax/libs/backbone.radio/2.0.0/backbone.radio.min.js'></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github-gist.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.1/highlight.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
     <script>hljs.initHighlightingOnLoad();</script>
     <link href="gisty.css" rel="stylesheet">
   </head>
@@ -33,11 +34,11 @@
   
     <ul class="nav">
       <li class="nav-item" style="margin-right:1em;">
-        <button class="btn btn-success new-gist">New gist</button>
+        <button class="btn btn-success new-gist"><i class="fa fa-plus" aria-hidden="true"></i> New gist</button>
       </li>
       <li class="nav-item">
         <input class="form-control mr-sm-2" type="text" placeholder="Search">
-        <button class="btn btn-outline-success my-2 my-sm-0">Search</button>
+        <button class="btn btn-outline-success my-2 my-sm-0"><i class="fa fa-search" aria-hidden="true"></i> Search</button>
       </li>
     </ul>
   </script>
@@ -47,7 +48,7 @@
     <div class="card">
       <div class="card-header">
         <h5 style="float:left;margin-top: 0.5rem;"><%= filename %></h5>
-        <button class="btn btn-primary copy" style="float:right">Copy</button>
+        <button class="btn btn-primary copy" style="float:right"><i class="fa fa-clipboard" aria-hidden="true"></i> Copy</button>
       </div>
       <div class="card-body">
         <pre class="card-text"><code class="<%= language %>"><%= _.unescape(content.replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll("&","&amp;")) %></code></pre>
@@ -73,7 +74,7 @@
   
   
   
-  
+
   
   <script type="text/template" id='template-edit-file'>
     <div class="card">
@@ -83,7 +84,7 @@
             <input class="form-control mr-sm-2 float-left fileName" type="text" placeholder="Filename and extension" value="<%= filename %>">
           </div>
           <div class="col">
-            <button class="btn btn-danger deleteFile float-right">Delete</button>
+            <button class="btn btn-danger deleteFile float-right"><i class="fa fa-trash-o" aria-hidden="true"></i> Delete</button>
           </div>
         </div>
       </div>
@@ -132,8 +133,8 @@
   <script type="text/template" id='details'>
     <div class="row">
       <div class="col-8">
-        <button class="btn btn-warning edit-gist">Edit</button>
-        <button class="btn btn-danger deleteGists">Delete</button>
+        <button class="btn btn-warning edit-gist"><i class="fa fa-pencil" aria-hidden="true"></i> Edit</button>
+        <button class="btn btn-danger deleteGists"><i class="fa fa-trash-o" aria-hidden="true"></i> Delete</button>
         
       </div>
     </div>
@@ -143,6 +144,10 @@
     </div>
       <%
         if (tags.length > 0) {
+          %>
+          <i class="fa fa-tags" aria-hidden="true" style="color:#0275d8;"></i>
+          <%
+          
             _.each(tags.split(' '), function (tags) { %>
                 <span class='badge badge-pill badge-primary'><%= tags %></span><%
             });
@@ -160,8 +165,8 @@
   <script type="text/template" id='template-edit-details'>
     <div class="row">
       <div class="col-8">
-        <button class="btn btn-success save-gist">Save</button>
-        <button class="btn btn-warning cancel-gist">Cancel</button>
+        <button class="btn btn-success save-gist"><i class="fa fa-check" aria-hidden="true"></i> Save</button>
+        <button class="btn btn-warning cancel-gist"><i class="fa fa-times" aria-hidden="true"></i> Cancel</button>
       </div>
     </div>
     
@@ -174,7 +179,7 @@
     <div style="padding:0px;margin:0px">
     <div class="row">
         <div class="col">
-          <button class="btn btn-success add-gist">Add File +</button>
+          <button class="btn btn-success add-gist"><i class="fa fa-plus" aria-hidden="true"></i> Add File</button>
         </div>
       </div>
     </div>
@@ -183,9 +188,15 @@
 
 
   <script type="text/template" id='template-loading'>
-    <div class="row">
+    <div class="row text-center">
       <div class="col">
-          <h1>Saving, please wait...</h1>
+          <h1>
+            <i class="fa fa-cog fa-spin fa-1x fa-fw"></i>
+            Building your gist
+          </h1>
+          <h2>
+            Please wait.
+          </h2>
       </div>
     </div>
   </script>
@@ -199,8 +210,8 @@
   <script type="text/template" id='template-new-details'>
     <div class="row">
       <div class="col-8">
-        <button class="btn btn-success save-gist">Save</button>
-        <button class="btn btn-warning cancel-gist">Cancel</button>
+        <button class="btn btn-success save-gist"><i class="fa fa-check" aria-hidden="true"></i> Save</button>
+        <button class="btn btn-warning cancel-gist"><i class="fa fa-times" aria-hidden="true"></i> Cancel</button>
       </div>
 
     </div>
@@ -214,7 +225,7 @@
     <div style="padding:0px;margin:0px">
     <div class="row">
         <div class="col">
-          <button class="btn btn-success add-gist">Add File +</button>
+          <button class="btn btn-success add-gist"><i class="fa fa-plus" aria-hidden="true"></i> Add File</button>
         </div>
       </div>
     </div>
@@ -247,10 +258,10 @@
   
     <div id="wrapper">
       <div class="language-wrapper">
-        <h6>Languages</h6>
+        <h6>Languages <i class="fa fa-code" aria-hidden="true"></i></h6>
         <hr style="margin:0rem;color:#ffffff">
         <div id='language'></div>
-        <h6>Tags</h6>
+        <h6>Tags <i class="fa fa-tags" aria-hidden="true"></i></h6>
         <hr style="margin:0rem;color:#ffffff">
         <div id='tags'></div>
       </div>
