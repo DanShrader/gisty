@@ -1,29 +1,42 @@
 // thanks  https://stackoverflow.com/questions/1144783/how-to-replace-all-occurrences-of-a-string-in-javascript
-String.prototype.replaceAll = function(search, replacement) {
-    var target = this;
-    return target.replace(new RegExp(search, 'g'), replacement);
+String.prototype.replaceAll = function (search, replacement) {
+	var target = this;
+	return target.replace(new RegExp(search, 'g'), replacement);
 };
 
+// Thanks
+// https://stackoverflow.com/questions/3066586/get-string-in-yyyymmdd-format-from-js-date-object
+Date.prototype.yyyymmdd = function () {
+	var mm = this.getMonth() + 1; // getMonth() is zero-based
+	var dd = this.getDate();
 
-var radio = Backbone.Radio.channel('gisty');
+	return [this.getFullYear(),
+		(mm > 9 ? '' : '0') + mm,
+		(dd > 9 ? '' : '0') + dd
+	].join('-');
+};
+
+Date.prototype.toInt = function () {
+	var mm = this.getMonth() + 1; // getMonth() is zero-based
+	var dd = this.getDate();
+	var hh = this.getHours();
+	var MM = this.getMinutes();
+	var ss = this.getSeconds();
+
+	return parseInt([this.getFullYear(),
+		(mm > 9 ? '' : '0') + mm,
+		(dd > 9 ? '' : '0') + dd,
+		(hh > 9 ? '' : '0') + hh,
+		(MM > 9 ? '' : '0') + MM,
+		(ss > 9 ? '' : '0') + ss
+	].join(''));
+};
 
 var app = function () {
 
 	var settings = {
 		mode: "view"
 	}
-
-	// Thanks
-	// https://stackoverflow.com/questions/3066586/get-string-in-yyyymmdd-format-from-js-date-object
-	Date.prototype.yyyymmdd = function () {
-		var mm = this.getMonth() + 1; // getMonth() is zero-based
-		var dd = this.getDate();
-
-		return [this.getFullYear(),
-			(mm > 9 ? '' : '0') + mm,
-			(dd > 9 ? '' : '0') + dd
-		].join('-');
-	};
 
 	var globalKey = APIkey;
 
@@ -62,37 +75,36 @@ var app = function () {
 		defaults: {
 			id: null,
 			description: null,
-			html_url: null,
-			updated_at: null,
+			html_url: "https://gist.github.com/",
+			updated_at: 9999999999999999,
 			language: "",
+			public: false,
 			tags: " "
 		},
-    destroy: function (attrs, options) {
-        // var opts = _.extend({url: '/destroy/' + this.id}, options || {});
-        
-        
-        var alteredUrl = this.get("url") + '?access_token=' + globalKey;
-        // console.log(alteredUrl);
-        // console.log(this.id);
-        // console.log(this);
-        var opts = _.extend({url: alteredUrl});
-        
-        
-        
-        // console.warn('the destroy ovveride called');
-        // console.warn(options);
-        // console.warn(attrs);
-        return Backbone.Model.prototype.destroy.call(this, opts);
-        // return Backbone.Model.prototype.destroy.call();
-    },
-		
-		
-		
+		destroy: function (attrs, options) {
+			// var opts = _.extend({url: '/destroy/' + this.id}, options || {});
+
+			var alteredUrl = this.get("url") + '?access_token=' + globalKey;
+			// console.log(alteredUrl);
+			// console.log(this.id);
+			// console.log(this);
+			var opts = _.extend({
+				url: alteredUrl
+			});
+
+			// console.warn('the destroy ovveride called');
+			// console.warn(options);
+			// console.warn(attrs);
+			return Backbone.Model.prototype.destroy.call(this, opts);
+			// return Backbone.Model.prototype.destroy.call();
+		},
+
 		// Overwrite save function
 		save: function (attrs, options) {
 			modelTaggin(this);
 			options || (options = {});
 			attrs || (attrs = _.clone(this.attributes));
+			// console.warn(attrs);
 			var newFiles = {};
 			_.forEach(fileCollection.models, function (model) {
 				if (typeof (model) !== 'undefined') {
@@ -104,7 +116,9 @@ var app = function () {
 
 						// if the file is renamed need to pass a blank object to remove
 						// https://developer.github.com/v3/gists/#edit-a-gist
-						if (model.get('nameChange') !== 'false') {
+
+						// attrs.id is catching the 'new' items
+						if (model.get('nameChange') !== 'false' && attrs.id !== null) {
 							// 	console.warn('name change', model);
 							newFiles[model.get('nameChange')] = {};
 						}
@@ -142,7 +156,11 @@ var app = function () {
 			delete attrs.tags;
 			delete attrs.user;
 			delete attrs.cleanUpdateDate;
+			delete attrs.intUpdateDate;
 			options.data = JSON.stringify(attrs);
+
+			// 	console.log(options);
+
 			// Proxy the call to the original save function
 			return Backbone.Model.prototype.save.call(this, attrs, options);
 		}
@@ -152,6 +170,10 @@ var app = function () {
 	var GistCollection = Backbone.Collection.extend({
 		model: model,
 		url: 'https://api.github.com/gists'
+		,comparator: function (model) {
+			return -model.get('intUpdateDate');
+		}
+
 	});
 
 	var file = Backbone.Model.extend({
@@ -222,6 +244,7 @@ var app = function () {
 		});
 		model.set('tags', tagArray.join(" "));
 		model.set('cleanUpdateDate', (new Date(model.get('updated_at')).yyyymmdd()));
+		model.set('intUpdateDate', (new Date(model.get('updated_at')).toInt()));
 	};
 
 	gists.on("add", function (model) {
@@ -338,6 +361,13 @@ var app = function () {
 		tagName: 'ul',
 		childView: ChildView,
 		collection: gists,
+		reorderOnSort:   true,
+		viewComparator: -'intUpdateDate'
+		
+		
+		
+		
+		
 	});
 
 	var gistList = new CollectionView();
@@ -347,23 +377,22 @@ var app = function () {
 
 		onBeforeRender: function () {
 
-		// 	console.log(this.template)
+			// 	console.log(this.template)
 			tmp = '#file'
 			if (settings.mode !== "view" && typeof (settings.mode) !== "undefined") {
 				tmp = '#template-edit-file'
 			}
 			this.template = tmp
-			
-			if (this.model.get('deleteFlag') === true){
-  			this.$el.hide()
+
+			if (this.model.get('deleteFlag') === true) {
+				this.$el.hide()
 			} else {
-  			this.$el.show()
+				this.$el.show()
 			}
-			
-			
+
 		},
 
-		template:'#file',
+		template: '#file',
 		tagName: 'li',
 		ui: {
 			copy: '.copy',
@@ -418,10 +447,10 @@ var app = function () {
 		},
 		flagForDelete: function () {
 			this.model.set('deleteFlag', true);
-			
+
 			this.$el.hide()
-			
-		// 	this.destroy();
+
+			// 	this.destroy();
 		}
 	});
 
@@ -484,10 +513,12 @@ var app = function () {
 		className: 'form-inline',
 		ui: {
 			searchBTN: '.btn',
+			newGist: '.new-gist',
 			searchInput: '.form-control'
 		},
 		events: {
-			"click @ui.searchBTN": "filter"
+			"click @ui.searchBTN": "filter",
+			"click @ui.newGist": "newGist"
 		},
 		filter: function (e) {
 			e.preventDefault();
@@ -500,6 +531,15 @@ var app = function () {
 				preventRender: true
 			});
 			gistList.render();
+		},
+
+		newGist: function () {
+			// 	console.log('new clicked');
+
+			fileCollection.reset();
+
+			gist.newView()
+
 		}
 	});
 
@@ -559,12 +599,18 @@ var app = function () {
 		},
 
 		template: '#details',
-		
+
 		onBeforeRender: function () {
-		// 	console.log(this.template)
+			// 	console.log(this.template)
 			tmp = '#details'
 			if (settings.mode !== "view" && typeof (settings.mode) !== "undefined") {
 				tmp = '#template-edit-details'
+			}
+			if (settings.mode === "new" && typeof (settings.mode) !== "undefined") {
+				tmp = '#template-new-details'
+			}
+			if (settings.mode === "loading" && typeof (settings.mode) !== "undefined") {
+				tmp = '#template-loading'
 			}
 			this.template = tmp
 		},
@@ -578,18 +624,27 @@ var app = function () {
 				childView.change()
 			});
 		},
-		
+
+		newView: function () {
+			// 	this.template = '#template-edit-details';
+			settings.mode = "new";
+			fileCollection.reset();
+			this.render();
+			this.addGist();
+		},
+
 		deleteGists: function () {
 			// 	this.template = '#template-edit-details';
-      // console.warn('deleting the gist id: ',this.model.get('id'))
-      
-      var conf = confirm('About to delete. Proceed?')
-      
-      if(conf === true){
-        this.model.destroy();
-        this.$el.html('<h1>Deleted the gist</h1>');
-      }
-      
+			// console.warn('deleting the gist id: ',this.model.get('id'))
+
+			var conf = confirm('About to delete. Proceed?')
+
+			if (conf === true) {
+				this.model.destroy();
+				this.$el.html('<h1>Deleted the gist</h1>');
+				gistList.$el.find('li').first().click();
+			}
+
 		},
 
 		readView: function () {
@@ -599,42 +654,80 @@ var app = function () {
 			this.render();
 			// 	this.status = "viewOnly"
 
-      // remove delete flage if applicable for the files
-			fileCollection.forEach(function(model){
+			// remove delete flage if applicable for the files
+			fileCollection.forEach(function (model) {
 				model.set('deleteFlag', false);
 			});
-				
-				
+
 			_.forEach(files.children._views, function (childView) {
-				
-				
+
 				childView.displayView()
 			});
 
+		},
+
+
+
+		loadView: function () {
+			// 	this.template = '#details';
+			settings.mode = "loading";
+			// fileView.template= '#file';
+			this.render();
+			// 	this.status = "viewOnly"
 		},
 
 		saveView: function () {
 			// console.log('save button');
 			// console.log(this.ui.desc.val());
 
-			this.model.set("description", this.ui.desc.val())
-			// console.log(files);
-			// console.log(this.model);
+      var desc = this.ui.desc.val();
 
-			_.forEach(files.children._views, function (childView) {
-				childView.updateCode()
-			});
+			if (settings.mode !== "new") {
+				this.model.set("description", desc)
+				_.forEach(files.children._views, function (childView) {
+					childView.updateCode()
+				});
+				this.model.save();
+				this.readView();
+			} else {
 
-			this.model.save();
+				// console.log('new item')
 
-			this.readView();
+				_.forEach(files.children._views, function (childView) {
+					childView.updateCode()
+				});
+
+				// console.log(fileCollection)
+
+				//THANKS https://stackoverflow.com/questions/14942592/backbone-collection-create-success
+				
+				this.loadView();
+				var dateInt = new Date().toInt();
+				var newGist;
+				newGist = gists.create({
+					'description': desc,
+          'intUpdateDate': dateInt
+				}, {
+					success: function () {
+						// console.log(newGist);
+						// console.log(newGist.get('id'));
+						newGist.set({'intUpdateDate': dateInt})
+						gistList.$el.find('li').first().click();
+						// do some stuff here
+						// this.readView();
+					}
+				});
+
+			}
+
+		// 	this.readView();
 
 			// fileCollection.models[0].set('deleteFlag',true)
 
 		},
 
 		addGist: function () {
-			console.log('add button');
+			// 	console.log('add button');
 			fileCollection.add({
 				"filename": "_" + new Date() + ".txt",
 				content: "Some awesome Code"
@@ -658,9 +751,11 @@ var app = function () {
 	$("#tags").html(tags.el);
 	$(".searchbox").html(searchView.el);
 
+	window.gist = gist;
 	window.gists = gists;
 	window.fileCollection = fileCollection;
 	window.files = files;
+	window.gistList = gistList;
 }
 
 var APIkey = localStorage.getItem("gistyAPIKey") || "";

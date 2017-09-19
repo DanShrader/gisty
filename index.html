@@ -30,9 +30,18 @@
   </script>
 
   <script type="text/template" id='search-template'>
-    <input class="form-control mr-sm-2" type="text" placeholder="Search">
-    <button class="btn btn-outline-success my-2 my-sm-0">Search</button>
+  
+    <ul class="nav">
+      <li class="nav-item" style="margin-right:1em;">
+        <button class="btn btn-success new-gist">New gist</button>
+      </li>
+      <li class="nav-item">
+        <input class="form-control mr-sm-2" type="text" placeholder="Search">
+        <button class="btn btn-outline-success my-2 my-sm-0">Search</button>
+      </li>
+    </ul>
   </script>
+
 
   <script type="text/template" id='file'>
     <div class="card">
@@ -109,7 +118,7 @@
   
   <script type="text/template" id='item'>
     <p class='truncate'><%= description %></p>
-    <p style='font-height:8px !important'><%= cleanUpdateDate %></p>
+    <p style='font-height:8px !important'><%= intUpdateDate %></p>
     
     <%
       if (tags.length > 0) {
@@ -127,13 +136,10 @@
         <button class="btn btn-danger deleteGists">Delete</button>
         
       </div>
-      <div class="col">
-        <a target="_blank" href="<%= html_url %>" class="btn btn-info float-right">github gist link</a>
-      </div>
     </div>
     
     <div>
-      <p class='descriptionView'><%= description %></p>
+      <p class='descriptionView'><%= description || "loading" %></p>
     </div>
       <%
         if (tags.length > 0) {
@@ -157,9 +163,6 @@
         <button class="btn btn-success save-gist">Save</button>
         <button class="btn btn-warning cancel-gist">Cancel</button>
       </div>
-      <div class="col">
-        <a target="_blank" href="<%= html_url %>" class="btn btn-info float-right">github gist link</a>
-      </div>
     </div>
     
     <div>
@@ -176,6 +179,48 @@
       </div>
     </div>
   </script>
+
+
+
+  <script type="text/template" id='template-loading'>
+    <div class="row">
+      <div class="col">
+          <h1>Saving, please wait...</h1>
+      </div>
+    </div>
+  </script>
+
+
+
+
+
+
+
+  <script type="text/template" id='template-new-details'>
+    <div class="row">
+      <div class="col-8">
+        <button class="btn btn-success save-gist">Save</button>
+        <button class="btn btn-warning cancel-gist">Cancel</button>
+      </div>
+
+    </div>
+    
+    <div>
+      <textarea class="description"></textarea>
+    </div>
+    <br>
+    <br>
+    <div class='files' style="padding:0px;margin:0px"></div>
+    <div style="padding:0px;margin:0px">
+    <div class="row">
+        <div class="col">
+          <button class="btn btn-success add-gist">Add File +</button>
+        </div>
+      </div>
+    </div>
+  </script>
+
+
 
 
 
