@@ -609,6 +609,9 @@ var app = function () {
 			if (settings.mode === "new" && typeof (settings.mode) !== "undefined") {
 				tmp = '#template-new-details'
 			}
+			if (settings.mode === "loading" && typeof (settings.mode) !== "undefined") {
+				tmp = '#template-loading'
+			}
 			this.template = tmp
 		},
 
@@ -639,6 +642,7 @@ var app = function () {
 			if (conf === true) {
 				this.model.destroy();
 				this.$el.html('<h1>Deleted the gist</h1>');
+				gistList.$el.find('li').first().click();
 			}
 
 		},
@@ -662,12 +666,24 @@ var app = function () {
 
 		},
 
+
+
+		loadView: function () {
+			// 	this.template = '#details';
+			settings.mode = "loading";
+			// fileView.template= '#file';
+			this.render();
+			// 	this.status = "viewOnly"
+		},
+
 		saveView: function () {
 			// console.log('save button');
 			// console.log(this.ui.desc.val());
 
+      var desc = this.ui.desc.val();
+
 			if (settings.mode !== "new") {
-				this.model.set("description", this.ui.desc.val())
+				this.model.set("description", desc)
 				_.forEach(files.children._views, function (childView) {
 					childView.updateCode()
 				});
@@ -684,18 +700,21 @@ var app = function () {
 				// console.log(fileCollection)
 
 				//THANKS https://stackoverflow.com/questions/14942592/backbone-collection-create-success
+				
+				this.loadView();
+				var dateInt = new Date().toInt();
 				var newGist;
 				newGist = gists.create({
-					'description': this.ui.desc.val(),
-          'intUpdateDate': new Date().toInt()
+					'description': desc,
+          'intUpdateDate': dateInt
 				}, {
 					success: function () {
 						// console.log(newGist);
 						// console.log(newGist.get('id'));
-						newGist.set({'intUpdateDate': new Date().toInt()})
+						newGist.set({'intUpdateDate': dateInt})
 						gistList.$el.find('li').first().click();
 						// do some stuff here
-						this.readView();
+						// this.readView();
 					}
 				});
 
