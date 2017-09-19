@@ -48,7 +48,7 @@
     <div class="card">
       <div class="card-header">
         <h5 style="float:left;margin-top: 0.5rem;"><%= filename %></h5>
-        <button class="btn btn-primary copy" style="float:right"><i class="fa fa-clipboard" aria-hidden="true"></i> Copy</button>
+        <button class="btn btn-outline-primary copy" style="float:right"><i class="fa fa-clipboard" aria-hidden="true"></i> Copy</button>
       </div>
       <div class="card-body">
         <pre class="card-text"><code class="<%= language %>"><%= _.unescape(content.replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll("&","&amp;")) %></code></pre>
@@ -119,8 +119,6 @@
   
   <script type="text/template" id='item'>
     <p class='truncate'><%= description %></p>
-    <p style='font-height:8px !important'><%= intUpdateDate %></p>
-    
     <%
       if (tags.length > 0) {
           _.each(tags.split(' '), function (tags) { %>
@@ -132,16 +130,27 @@
 
   <script type="text/template" id='details'>
     <div class="row">
-      <div class="col-8">
-        <button class="btn btn-warning edit-gist"><i class="fa fa-pencil" aria-hidden="true"></i> Edit</button>
-        <button class="btn btn-danger deleteGists"><i class="fa fa-trash-o" aria-hidden="true"></i> Delete</button>
+      <div class="col-3">
+      <% if(public === false){  %>
+        Private gist <i class="fa fa-eye-slash" aria-hidden="true"></i>
+      <%   }else{  %>
+        Public gist <i class="fa fa-eye" aria-hidden="true"></i>
+      <%   } %>
         
       </div>
+      <div class="col-4">
+        Updated on: <%= cleanUpdateDate %>
+      </div>
+      <div class="col-5">
+        <div class="btn-group float-right" data-toggle="buttons">
+          <button class="btn btn-info edit-gist btn-sm"><i class="fa fa-pencil" aria-hidden="true"></i> Edit</button>
+          <button class="btn btn-danger deleteGists btn-sm"><i class="fa fa-trash-o" aria-hidden="true"></i> Delete</button>
+        </div>
+      </div>
     </div>
+    <div class="row">
+      <div class="col-12">
     
-    <div>
-      <p class='descriptionView'><%= description || "loading" %></p>
-    </div>
       <%
         if (tags.length > 0) {
           %>
@@ -153,6 +162,14 @@
             });
         }
       %>
+    
+      </div>
+    </div>
+    
+    <hr>
+    <div>
+      <p class='descriptionView'><%= description || "loading" %></p>
+    </div>
     <br>
     <br>
     <div class='files' style="padding:0px;margin:0px"></div>

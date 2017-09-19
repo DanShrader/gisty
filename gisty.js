@@ -664,6 +664,10 @@ var app = function () {
 				childView.displayView()
 			});
 
+			$('pre code').each(function (i, block) {
+  			hljs.highlightBlock(block);
+			});
+
 		},
 
 

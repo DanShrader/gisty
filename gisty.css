@@ -77,14 +77,12 @@ body {
     margin-left: 550px;
 }
 
-
-
-  .truncate {
-    width: 320px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
+.truncate {
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 
 code{
   font-size:12px !important;
