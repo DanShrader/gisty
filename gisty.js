@@ -672,6 +672,7 @@ var app = function () {
 					childView.updateCode()
 				});
 				this.model.save();
+				this.readView();
 			} else {
 
 				// console.log('new item')
@@ -686,22 +687,21 @@ var app = function () {
 				var newGist;
 				newGist = gists.create({
 					'description': this.ui.desc.val(),
-						
-
-		
-'intUpdateDate': new Date().toInt()
+          'intUpdateDate': new Date().toInt()
 				}, {
 					success: function () {
 						// console.log(newGist);
 						// console.log(newGist.get('id'));
 						newGist.set({'intUpdateDate': new Date().toInt()})
+						gistList.$el.find('li').first().click();
 						// do some stuff here
+						this.readView();
 					}
 				});
 
 			}
 
-			this.readView();
+		// 	this.readView();
 
 			// fileCollection.models[0].set('deleteFlag',true)
 

@@ -139,7 +139,7 @@
     </div>
     
     <div>
-      <p class='descriptionView'><%= description %></p>
+      <p class='descriptionView'><%= description || "loading" %></p>
     </div>
       <%
         if (tags.length > 0) {
