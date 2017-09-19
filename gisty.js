@@ -4,25 +4,39 @@ String.prototype.replaceAll = function (search, replacement) {
 	return target.replace(new RegExp(search, 'g'), replacement);
 };
 
-var radio = Backbone.Radio.channel('gisty');
+// Thanks
+// https://stackoverflow.com/questions/3066586/get-string-in-yyyymmdd-format-from-js-date-object
+Date.prototype.yyyymmdd = function () {
+	var mm = this.getMonth() + 1; // getMonth() is zero-based
+	var dd = this.getDate();
+
+	return [this.getFullYear(),
+		(mm > 9 ? '' : '0') + mm,
+		(dd > 9 ? '' : '0') + dd
+	].join('-');
+};
+
+Date.prototype.toInt = function () {
+	var mm = this.getMonth() + 1; // getMonth() is zero-based
+	var dd = this.getDate();
+	var hh = this.getHours();
+	var MM = this.getMinutes();
+	var ss = this.getSeconds();
+
+	return parseInt([this.getFullYear(),
+		(mm > 9 ? '' : '0') + mm,
+		(dd > 9 ? '' : '0') + dd,
+		(hh > 9 ? '' : '0') + hh,
+		(MM > 9 ? '' : '0') + MM,
+		(ss > 9 ? '' : '0') + ss
+	].join(''));
+};
 
 var app = function () {
 
 	var settings = {
 		mode: "view"
 	}
-
-	// Thanks
-	// https://stackoverflow.com/questions/3066586/get-string-in-yyyymmdd-format-from-js-date-object
-	Date.prototype.yyyymmdd = function () {
-		var mm = this.getMonth() + 1; // getMonth() is zero-based
-		var dd = this.getDate();
-
-		return [this.getFullYear(),
-			(mm > 9 ? '' : '0') + mm,
-			(dd > 9 ? '' : '0') + dd
-		].join('-');
-	};
 
 	var globalKey = APIkey;
 
@@ -61,9 +75,10 @@ var app = function () {
 		defaults: {
 			id: null,
 			description: null,
-			html_url: null,
-			updated_at: null,
+			html_url: "https://gist.github.com/",
+			updated_at: 9999999999999999,
 			language: "",
+			public: false,
 			tags: " "
 		},
 		destroy: function (attrs, options) {
@@ -89,6 +104,7 @@ var app = function () {
 			modelTaggin(this);
 			options || (options = {});
 			attrs || (attrs = _.clone(this.attributes));
+			// console.warn(attrs);
 			var newFiles = {};
 			_.forEach(fileCollection.models, function (model) {
 				if (typeof (model) !== 'undefined') {
@@ -100,7 +116,9 @@ var app = function () {
 
 						// if the file is renamed need to pass a blank object to remove
 						// https://developer.github.com/v3/gists/#edit-a-gist
-						if (model.get('nameChange') !== 'false') {
+
+						// attrs.id is catching the 'new' items
+						if (model.get('nameChange') !== 'false' && attrs.id !== null) {
 							// 	console.warn('name change', model);
 							newFiles[model.get('nameChange')] = {};
 						}
@@ -139,6 +157,9 @@ var app = function () {
 			delete attrs.user;
 			delete attrs.cleanUpdateDate;
 			options.data = JSON.stringify(attrs);
+
+			// 	console.log(options);
+
 			// Proxy the call to the original save function
 			return Backbone.Model.prototype.save.call(this, attrs, options);
 		}
@@ -334,6 +355,7 @@ var app = function () {
 		tagName: 'ul',
 		childView: ChildView,
 		collection: gists,
+		reorderOnSort: true
 	});
 
 	var gistList = new CollectionView();
@@ -500,7 +522,7 @@ var app = function () {
 		},
 
 		newGist: function () {
-			console.log('new clicked');
+			// 	console.log('new clicked');
 
 			fileCollection.reset();
 
@@ -640,27 +662,25 @@ var app = function () {
 				this.model.save();
 			} else {
 
-				console.log('new item')
+				// console.log('new item')
 
 				_.forEach(files.children._views, function (childView) {
 					childView.updateCode()
 				});
-				
-				console.log(fileCollection)
-				
+
+				// console.log(fileCollection)
+
 				//THANKS https://stackoverflow.com/questions/14942592/backbone-collection-create-success
 				var newGist;
 				newGist = gists.create({
 					'description': this.ui.desc.val()
 				}, {
 					success: function () {
-						console.log(newGist);
-						console.log(newGist.get('id'));
-            // do some stuff here
+						// console.log(newGist);
+						// console.log(newGist.get('id'));
+						// do some stuff here
 					}
 				});
-				
-				
 
 			}
 
@@ -671,7 +691,7 @@ var app = function () {
 		},
 
 		addGist: function () {
-			console.log('add button');
+			// 	console.log('add button');
 			fileCollection.add({
 				"filename": "_" + new Date() + ".txt",
 				content: "Some awesome Code"
@@ -699,6 +719,7 @@ var app = function () {
 	window.gists = gists;
 	window.fileCollection = fileCollection;
 	window.files = files;
+	window.gistList = gistList;
 }
 
 var APIkey = localStorage.getItem("gistyAPIKey") || "";
