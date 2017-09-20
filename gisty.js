@@ -169,8 +169,8 @@ var app = function () {
 
 	var GistCollection = Backbone.Collection.extend({
 		model: model,
-		url: 'https://api.github.com/gists'
-		,comparator: function (model) {
+		url: 'https://api.github.com/gists',
+		comparator: function (model) {
 			return -model.get('intUpdateDate');
 		}
 
@@ -361,13 +361,9 @@ var app = function () {
 		tagName: 'ul',
 		childView: ChildView,
 		collection: gists,
-		reorderOnSort:   true,
+		reorderOnSort: true,
 		viewComparator: -'intUpdateDate'
-		
-		
-		
-		
-		
+
 	});
 
 	var gistList = new CollectionView();
@@ -512,18 +508,28 @@ var app = function () {
 		tagName: 'form',
 		className: 'form-inline',
 		ui: {
-			searchBTN: '.btn',
+			searchBTN: '.searchBTN',
 			newGist: '.new-gist',
-			searchInput: '.form-control'
+			searchInput: '.searchInput'
 		},
 		events: {
 			"click @ui.searchBTN": "filter",
-			"click @ui.newGist": "newGist"
+			"click @ui.newGist": "newGist",
+			'keypress @ui.searchInput': 'perventEnter'
 		},
+
+		perventEnter: function (e) {
+			if (e.which === 13) {
+				e.preventDefault();
+				this.filter(e)
+			}
+		},
+
 		filter: function (e) {
 			e.preventDefault();
 			var searchValue = this.ui.searchInput.val();
 			$('.language-wrapper .active').removeClass('active');
+
 			var filter = function (child, index, collection) {
 				return (child.get('description').toLowerCase()).indexOf(searchValue.toLowerCase()) >= 0;
 			};
@@ -675,12 +681,10 @@ var app = function () {
 			});
 
 			$('pre code').each(function (i, block) {
-  			hljs.highlightBlock(block);
+				hljs.highlightBlock(block);
 			});
 
 		},
-
-
 
 		loadView: function () {
 			// 	this.template = '#details';
@@ -694,7 +698,7 @@ var app = function () {
 			// console.log('save button');
 			// console.log(this.ui.desc.val());
 
-      var desc = this.ui.desc.val();
+			var desc = this.ui.desc.val();
 
 			if (settings.mode !== "new") {
 				this.model.set("description", desc)
@@ -714,18 +718,20 @@ var app = function () {
 				// console.log(fileCollection)
 
 				//THANKS https://stackoverflow.com/questions/14942592/backbone-collection-create-success
-				
+
 				this.loadView();
 				var dateInt = new Date().toInt();
 				var newGist;
 				newGist = gists.create({
 					'description': desc,
-          'intUpdateDate': dateInt
+					'intUpdateDate': dateInt
 				}, {
 					success: function () {
 						// console.log(newGist);
 						// console.log(newGist.get('id'));
-						newGist.set({'intUpdateDate': dateInt})
+						newGist.set({
+							'intUpdateDate': dateInt
+						})
 						gistList.$el.find('li').first().click();
 						// do some stuff here
 						// this.readView();
@@ -734,7 +740,7 @@ var app = function () {
 
 			}
 
-		// 	this.readView();
+			// 	this.readView();
 
 			// fileCollection.models[0].set('deleteFlag',true)
 
