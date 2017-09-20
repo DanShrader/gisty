@@ -311,7 +311,25 @@
       <div id="page-content-wrapper">
         <div class="container-fluid">
           <div id='content'>
-            Loading...
+            
+            <h2>Welecome to gisty~</h2>
+            
+            <p>This is a GitHub gist interface, with lots of filters, search, and is not very chatty with the API.</p>
+            
+            <img src="https://github.com//DanShrader/gisty/raw/master/screenshot.png" alt="screenshot" title="Screenshot" style="max-width:100%;">
+          
+            
+            <hr>
+            
+            <h3>Setup</h3>
+            
+            <p>To start using this app you'll need to generate a GitHub API key and enter it the first time at the prompt.  The reason for this is I don't want to run a node server for API authentication.  It saves the key to you local storage so you don't have to keep entering it.  I never see it, cannot access it, and it is local to your machine.</p>
+            
+            <p>You can create a key <a href="https://github.com/settings/tokens" target="_blank">here</a> on your GitHub account.  Then select generate new token, then generate a new key for 'gists', copy the key and then use it to connect gisty to you repo.</p>
+
+            <button class='btn btn-success btn-lg' onclick="setup()">Enter API key</button>
+            
+            
           </div>
         </div>
       </div>
