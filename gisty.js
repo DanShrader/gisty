@@ -240,7 +240,7 @@ var app = function () {
 		var tagArray = [];
 		tagSplit.forEach(function (str) {
 			var part = str.split(" ");
-			tagArray.push(part[0]);
+			tagArray.push(part[0].toLowerCase());
 		});
 		model.set('tags', tagArray.join(" "));
 		model.set('cleanUpdateDate', (new Date(model.get('updated_at')).yyyymmdd()));
@@ -273,6 +273,12 @@ var app = function () {
 			fileTypeSummaryNull.destroy();
 		}
 
+
+
+
+
+
+
 		var tagCollectionGrp = gists.groupBy(function (model) {
 			return model.get('tags');
 		});
@@ -289,23 +295,26 @@ var app = function () {
 			"tag": null
 		})).destroy();
 
-		tagCollectionGrp = tagSummary.groupBy(function (model) {
-			return model.get('tag');
-		});
 
-		tagViewSummary.reset();
-
-		_.forEach(tagCollectionGrp, function (model) {
-			// console.log(model)
-			tagViewSummary.add({
-				"tag": model[0].attributes.tag || null,
-				"length": model.length
+    tagViewSummary.reset();
+    _.forEach(tagSummary.models, function (tag) {
+      tag = tag.get('tag')
+      var filter = function (child, index, collection) {
+				return child.get('tags').toLowerCase().indexOf(tag) >= 0;
+			}
+      var results = gists.filter(filter);
+      tagViewSummary.add({
+				"tag": tag,
+				"length": results.length
 			});
-		});
+    });
 
 	}
 
 	gists.on('sync', filtersAndTags);
+// 	gists.on('add', filtersAndTags);
+	
+	
 	// 	gists.on('taggin',filtersAndTags);
 
 	var len = gists.length;
@@ -788,6 +797,9 @@ var app = function () {
 	window.fileCollection = fileCollection;
 	window.files = files;
 	window.gistList = gistList;
+	window.tagSummary = tagSummary;
+	window.tagViewSummary = tagViewSummary;
+	window.filtersAndTags = filtersAndTags;
 }
 
 var APIkey = localStorage.getItem("gistyAPIKey") || "";

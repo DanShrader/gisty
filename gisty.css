@@ -33,17 +33,17 @@ body {
     overflow-y: scroll;
     top: 60px;
     bottom: 0;
-    padding:0.4rem;
+    padding:0;
 }
 
 .language-wrapper ul  {
   list-style-type: none;
-  padding: 0rem;
+  padding: 0;
 }
 
 .language-wrapper li  {
   font-weight: bold;
-  padding: 3px 0px 6px 12px;
+  padding: 3px 0 6px 12px;
 }
 
 
@@ -91,7 +91,7 @@ code{
 
 .language-wrapper li:hover, .language-wrapper li.active{
   background-color:#f7f7f9;
-  margin-right: -20px;
+  margin-right: 0;
   color: #000000;
 }
 
