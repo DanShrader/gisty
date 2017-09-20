@@ -35,8 +35,8 @@ Date.prototype.toInt = function () {
 var app = function () {
 
 	var settings = {
-		mode: "view"
-	}
+		mode: "initial"
+	};
 
 	var globalKey = APIkey;
 
@@ -356,14 +356,21 @@ var app = function () {
 		}
 	});
 
+	var MyEmptyGistCollectionView = Marionette.View.extend({
+		// template: '#item',
+		className: "list-group-item",
+		tagName: 'li',
+		template: _.template('Loading....')
+	});
+
 	var CollectionView = Marionette.CollectionView.extend({
 		className: "sidebar-nav list-group",
 		tagName: 'ul',
 		childView: ChildView,
 		collection: gists,
 		reorderOnSort: true,
-		viewComparator: -'intUpdateDate'
-
+		viewComparator: -'intUpdateDate',
+		emptyView: MyEmptyGistCollectionView
 	});
 
 	var gistList = new CollectionView();
@@ -497,7 +504,8 @@ var app = function () {
 		className: "",
 		tagName: 'ul',
 		childView: languageView,
-		collection: fileTypeSummary
+		collection: fileTypeSummary,
+		emptyView: MyEmptyGistCollectionView
 	});
 
 	var languages = new languagesView();
@@ -580,14 +588,13 @@ var app = function () {
 		className: "",
 		tagName: 'ul',
 		childView: tagView,
-		collection: tagViewSummary
+		collection: tagViewSummary,
+		emptyView: MyEmptyGistCollectionView
 	});
 	var tags = new tagsView()
 	tags.render();
 
 	var detailView = Marionette.View.extend({
-		// status: "viewOnly",
-
 		ui: {
 			edit: '.edit-gist',
 			deleteGists: '.deleteGists',
@@ -612,9 +619,12 @@ var app = function () {
 		template: '#details',
 
 		onBeforeRender: function () {
+			// console.log('------========------=====-----')
+			// console.log(settings.mode)
+			tmp = '#template-initial-load'
+			// 	tmp = _.template('Nothing to display.')
 			// 	console.log(this.template)
-			tmp = '#details'
-			if (settings.mode !== "view" && typeof (settings.mode) !== "undefined") {
+			if (settings.mode === "edit" && typeof (settings.mode) !== "undefined") {
 				tmp = '#template-edit-details'
 			}
 			if (settings.mode === "new" && typeof (settings.mode) !== "undefined") {
@@ -623,6 +633,10 @@ var app = function () {
 			if (settings.mode === "loading" && typeof (settings.mode) !== "undefined") {
 				tmp = '#template-loading'
 			}
+			if (settings.mode === "view" && typeof (settings.mode) !== "undefined") {
+				tmp = '#details'
+			}
+			// console.log(tmp)
 			this.template = tmp
 		},
 
@@ -755,15 +769,13 @@ var app = function () {
 		},
 
 		onRender: function () {
-			// console.warn(fileCollection.length)
-			// 	this.el.append(files.el);
-
 			this.$el.find('.files').append(files.el);
 		}
 
 	});
 
 	var gist = new detailView();
+	gist.render()
 
 	$("#list").html(gistList.el);
 	$("#content").html(gist.el);
@@ -781,16 +793,21 @@ var app = function () {
 var APIkey = localStorage.getItem("gistyAPIKey") || "";
 
 if (typeof (APIkey) === "undefined" || APIkey === null || APIkey === "" || APIkey === "null") {
+  // Moved to below
+  $('.sidebar-wrapper, .language-wrapper').hide()
+} else {
+	app();
+}
+
+var setup = function () {
 	var pass = prompt('Please enter you GitHub API key');
 	if (typeof (pass) !== 'undefined' && pass !== null) {
 		localStorage.setItem("gistyAPIKey", pass);
 		APIkey = localStorage.getItem("gistyAPIKey")
+		$('.sidebar-wrapper, .language-wrapper').show()
 		app();
 
 	} else {
 		alert("No API key found, please refresh and enter your API key to use the application")
 	}
-
-} else {
-	app();
 }
