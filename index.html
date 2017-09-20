@@ -182,8 +182,10 @@
   <script type="text/template" id='template-edit-details'>
     <div class="row">
       <div class="col-8">
-        <button class="btn btn-success save-gist"><i class="fa fa-check" aria-hidden="true"></i> Save</button>
-        <button class="btn btn-warning cancel-gist"><i class="fa fa-times" aria-hidden="true"></i> Cancel</button>
+        <div class="btn-group float-left" data-toggle="buttons">
+          <button class="btn btn-success btn-sm save-gist"><i class="fa fa-check" aria-hidden="true"></i> Save</button>
+          <button class="btn btn-warning btn-sm cancel-gist"><i class="fa fa-times" aria-hidden="true"></i> Cancel</button>
+        </div>
       </div>
     </div>
     
@@ -196,10 +198,33 @@
     <div style="padding:0px;margin:0px">
     <div class="row">
         <div class="col">
-          <button class="btn btn-success add-gist"><i class="fa fa-plus" aria-hidden="true"></i> Add File</button>
+          <button class="btn btn-success add-gist btn-sm"><i class="fa fa-plus" aria-hidden="true"></i> Add File</button>
         </div>
       </div>
     </div>
+  </script>
+
+
+
+
+  <script type="text/template" id='template-initial-load'>
+    <div class="row">
+      <div class="col-12">
+        <h2>gisty~</h2>
+        <hr>
+        <h4>Change log</h4>
+        <ul>
+          <li>Formatting and other UI fixes</li>
+          <li>Inital load screen with updates and such</li>
+          <li>Fixed the 'search' button bug when pressing enter</li>
+          <li>Made the buttons a little smaller</li>
+          <li>Moved tags to the top on the details page </li>
+          <li>Making the initial onboarding simpler</li>
+          <li>Place holaders for loading</li>
+        </ul>
+      </div>
+    </div>
+    
   </script>
 
 

@@ -35,8 +35,8 @@ Date.prototype.toInt = function () {
 var app = function () {
 
 	var settings = {
-		mode: "view"
-	}
+		mode: "initial"
+	};
 
 	var globalKey = APIkey;
 
@@ -356,14 +356,23 @@ var app = function () {
 		}
 	});
 
+  
+  var MyEmptyGistCollectionView = Marionette.View.extend({
+		// template: '#item',
+		className: "list-group-item",
+		tagName: 'li',
+    template: _.template('Loading....')
+  });
+
+
 	var CollectionView = Marionette.CollectionView.extend({
 		className: "sidebar-nav list-group",
 		tagName: 'ul',
 		childView: ChildView,
 		collection: gists,
 		reorderOnSort: true,
-		viewComparator: -'intUpdateDate'
-
+		viewComparator: -'intUpdateDate',
+    emptyView: MyEmptyGistCollectionView
 	});
 
 	var gistList = new CollectionView();
@@ -497,7 +506,8 @@ var app = function () {
 		className: "",
 		tagName: 'ul',
 		childView: languageView,
-		collection: fileTypeSummary
+		collection: fileTypeSummary,
+		emptyView: MyEmptyGistCollectionView
 	});
 
 	var languages = new languagesView();
@@ -580,14 +590,13 @@ var app = function () {
 		className: "",
 		tagName: 'ul',
 		childView: tagView,
-		collection: tagViewSummary
+		collection: tagViewSummary,
+		emptyView: MyEmptyGistCollectionView
 	});
 	var tags = new tagsView()
 	tags.render();
 
 	var detailView = Marionette.View.extend({
-		// status: "viewOnly",
-
 		ui: {
 			edit: '.edit-gist',
 			deleteGists: '.deleteGists',
@@ -612,9 +621,12 @@ var app = function () {
 		template: '#details',
 
 		onBeforeRender: function () {
+		  // console.log('------========------=====-----')
+		  // console.log(settings.mode)
+			tmp = '#template-initial-load'
+		// 	tmp = _.template('Nothing to display.')
 			// 	console.log(this.template)
-			tmp = '#details'
-			if (settings.mode !== "view" && typeof (settings.mode) !== "undefined") {
+			if (settings.mode === "edit" && typeof (settings.mode) !== "undefined") {
 				tmp = '#template-edit-details'
 			}
 			if (settings.mode === "new" && typeof (settings.mode) !== "undefined") {
@@ -623,6 +635,10 @@ var app = function () {
 			if (settings.mode === "loading" && typeof (settings.mode) !== "undefined") {
 				tmp = '#template-loading'
 			}
+			if (settings.mode === "view" && typeof (settings.mode) !== "undefined") {
+  			tmp = '#details'
+			}
+		  // console.log(tmp)
 			this.template = tmp
 		},
 
@@ -764,6 +780,8 @@ var app = function () {
 	});
 
 	var gist = new detailView();
+  gist.render()
+
 
 	$("#list").html(gistList.el);
 	$("#content").html(gist.el);
