@@ -587,6 +587,7 @@ var app = function () {
 			deleteGists: '.deleteGists',
 			save: '.save-gist',
 			cancel: '.cancel-gist',
+			cancelNew: '.cancel-gist-new',
 			add: '.add-gist',
 			desc: 'textarea.description'
 		},
@@ -595,6 +596,10 @@ var app = function () {
 			"click @ui.deleteGists": "deleteGists",
 			"click @ui.save": "saveView",
 			"click @ui.cancel": "readView",
+			"click @ui.cancelNew": "cancelView",
+			"click @ui.add": "addGist",
+			"click @ui.cancel": "readView",
+			"click @ui.cancelNew": "cancelView",
 			"click @ui.add": "addGist"
 		},
 
@@ -647,6 +652,11 @@ var app = function () {
 
 		},
 
+		cancelView: function () {
+			// 	this.template = '#details';
+			settings.mode = "view";
+			gistList.$el.find('li').first().click();
+		},
 		readView: function () {
 			// 	this.template = '#details';
 			settings.mode = "view";
