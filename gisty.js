@@ -515,10 +515,10 @@ var app = function () {
 		events: {
 			"click @ui.searchBTN": "filter",
 			"click @ui.newGist": "newGist",
-			'keypress @ui.searchInput': 'perventEnter'
+			'keypress @ui.searchInput': 'preventEnter'
 		},
 
-		perventEnter: function (e) {
+		preventEnter: function (e) {
 			if (e.which === 13) {
 				e.preventDefault();
 				this.filter(e)
