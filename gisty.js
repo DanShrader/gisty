@@ -38,9 +38,15 @@ var app = function () {
 		mode: "initial"
 	};
 
+	var filesToDelete = [];
+	orginalFiles ={};
+	window.orginalFiles  = _.clone(orginalFiles);
+	_.clone(window.filesToDelete = filesToDelete);
+
 	var globalKey = APIkey;
 
 	$.ajaxSetup({
+		cache: false,
 		data: {
 			access_token: globalKey
 		}
@@ -71,7 +77,6 @@ var app = function () {
 	};
 
 	var model = Backbone.Model.extend({
-		// url: urlWithKey('https://api.github.com/gists', globalKey),
 		defaults: {
 			id: null,
 			description: null,
@@ -82,21 +87,12 @@ var app = function () {
 			tags: " "
 		},
 		destroy: function (attrs, options) {
-			// var opts = _.extend({url: '/destroy/' + this.id}, options || {});
-
 			var alteredUrl = this.get("url") + '?access_token=' + globalKey;
-			// console.log(alteredUrl);
-			// console.log(this.id);
-			// console.log(this);
 			var opts = _.extend({
 				url: alteredUrl
 			});
 
-			// console.warn('the destroy ovveride called');
-			// console.warn(options);
-			// console.warn(attrs);
 			return Backbone.Model.prototype.destroy.call(this, opts);
-			// return Backbone.Model.prototype.destroy.call();
 		},
 
 		// Overwrite save function
@@ -104,37 +100,36 @@ var app = function () {
 			modelTaggin(this);
 			options || (options = {});
 			attrs || (attrs = _.clone(this.attributes));
-			// console.warn(attrs);
 			var newFiles = {};
+
+      // deleted files first, so they can be appended if needed
+      filesToDelete.forEach(function(tbd){
+        // If the file existed then it can be deleted
+        if(typeof(orginalFiles[tbd]) !== 'undefined'){
+          newFiles[tbd] = {};
+        }
+      });
+
+
+
 			_.forEach(fileCollection.models, function (model) {
 				if (typeof (model) !== 'undefined') {
-
 					if (model.get('deleteFlag') === true) {
-						newFiles[model.get('filename')] = {};
-						model.destroy();
+    					newFiles[model.get('filename')]={};
+  						model.destroy();
 					} else {
-
-						// if the file is renamed need to pass a blank object to remove
-						// https://developer.github.com/v3/gists/#edit-a-gist
-
-						// attrs.id is catching the 'new' items
-						if (model.get('nameChange') !== 'false' && attrs.id !== null) {
-							// 	console.warn('name change', model);
-							newFiles[model.get('nameChange')] = {};
-						}
-
+            // console.log('model to keep')
+            // console.log(model)
 						newFiles[model.get('filename')] = {
-							'content': model.get('content'),
-							'language': model.get('language')
+							'content': model.get('content')
 						};
-
 					}
-
 				}
 			});
-			// 	console.log('newFiles');
-			// 	console.log(newFiles);
-			// 	console.log('newFiles');
+
+		// 	console.log('newFiles');
+		// 	console.log(newFiles);
+
 
 			attrs.files = newFiles;
 
@@ -184,8 +179,24 @@ var app = function () {
 		},
 		initialize: function () {
 			this.collection.on("change:filename", function () {
-				this.set('nameChange', this.previous('filename'));
+
+				if (this.previous('filename') !== this.get('filename')) {
+					this.set('nameChange', this.previous('filename'));
+				// 	console.log("the name changed")
+					filesToDelete.push(this.previous('filename'));
+				// 	console.log(this.get('nameChange'))
+				}
 			}, this);
+			
+			
+		// 	this.collection.on("change:deleteFlag", function () {
+		// 		if (this.get('deleteFlag') === true) {
+		// 			filesToDelete.push(this.get('filename'));
+		// 		// 	filesToDelete.push(this.previous('filename'));
+		// 			console.log(this.get('nameChange'))
+		// 		}
+		// 	}, this);
+			
 		}
 	});
 
@@ -197,28 +208,19 @@ var app = function () {
 	var fileTypeCollection = new FileCollection();
 
 	fileCollection.on("add", function (file) {
-		// console.warn("Ahoy " + file.get("filename") + "!");
-
 		if (typeof (file.get("raw_url")) !== 'undefined') {
-
 			var url = file.get("raw_url") + '?' + globalKey;
-			// console.warn(url);
-
 			$.ajax({
 				url: url,
 				type: 'GET',
 			}).done(function (response) {
-				// console.log(response);
 				file.set("content", response);
 				files.render();
 				$('pre code').each(function (i, block) {
 					hljs.highlightBlock(block);
 				});
-				// https://highlightjs.org/
 			});
-
 		}
-
 	});
 
 	var gists = new GistCollection();
@@ -273,12 +275,6 @@ var app = function () {
 			fileTypeSummaryNull.destroy();
 		}
 
-
-
-
-
-
-
 		var tagCollectionGrp = gists.groupBy(function (model) {
 			return model.get('tags');
 		});
@@ -295,26 +291,24 @@ var app = function () {
 			"tag": null
 		})).destroy();
 
-
-    tagViewSummary.reset();
-    _.forEach(tagSummary.models, function (tag) {
-      tag = tag.get('tag')
-      var filter = function (child, index, collection) {
+		tagViewSummary.reset();
+		_.forEach(tagSummary.models, function (tag) {
+			tag = tag.get('tag')
+			var filter = function (child, index, collection) {
 				return child.get('tags').toLowerCase().indexOf(tag) >= 0;
 			}
-      var results = gists.filter(filter);
-      tagViewSummary.add({
+			var results = gists.filter(filter);
+			tagViewSummary.add({
 				"tag": tag,
 				"length": results.length
 			});
-    });
+		});
 
 	}
 
 	gists.on('sync', filtersAndTags);
-// 	gists.on('add', filtersAndTags);
-	
-	
+	// 	gists.on('add', filtersAndTags);
+
 	// 	gists.on('taggin',filtersAndTags);
 
 	var len = gists.length;
@@ -357,8 +351,12 @@ var app = function () {
 			settings.mode = "view"
 			this.$el.addClass('active');
 			fileCollection.reset();
+			
+		// 	orginalFiles = _.clone(this.model.get("files"));
+			
 			_.forEach(this.model.get("files"), function (file) {
 				fileCollection.add(file)
+				// console.log("files:", "=============", file);
 			});
 			gist.model = this.model;
 			gist.render();
@@ -443,26 +441,23 @@ var app = function () {
 			this.delegateEvents()
 		},
 		updateCode: function () {
-			// 	console.log('model is:')
-			// 	console.log(this.model.attributes)
-			// 	console.log('filename is:')
-			// 	console.log(this.ui.fileName.val())
-			// 	console.log('code is:')
-			// 	console.log(this.ui.codeEditor.val())
-			// 	console.log(this.ui.fileName)
-			//  Need incase the file is flagged for deletion
-			if (this.ui.fileName !== '.fileName') {
+			if (this.ui.fileName !== '.fileName' && this.model.get('flagForDelete') !== true) {
+			 // console.log('saving file')
+			 // console.log(this.model)
 				this.model.set("filename", this.ui.fileName.val());
 				this.model.set("content", this.ui.codeEditor.val());
 			}
-
 		},
 		flagForDelete: function () {
-			this.model.set('deleteFlag', true);
-
-			this.$el.hide()
-
-			// 	this.destroy();
+		  if(typeof(this.model.get('size')) !== "undefined"){
+		    // console.log('existing')
+		    this.model.set('deleteFlag',true)
+        filesToDelete.push(_.clone(this.model.get('filename')));
+  			this.$el.hide()
+		  } else {
+		    // console.log('new')
+		    this.model.destroy();
+		  }
 		}
 	});
 
@@ -652,6 +647,9 @@ var app = function () {
 		editView: function () {
 			// 	this.template = '#template-edit-details';
 			settings.mode = "edit";
+			
+			orginalFiles = _.clone(this.model.get("files"));
+			
 			this.render();
 			// 	this.status = "editMode"
 			_.forEach(files.children._views, function (childView) {
@@ -805,8 +803,8 @@ var app = function () {
 var APIkey = localStorage.getItem("gistyAPIKey") || "";
 
 if (typeof (APIkey) === "undefined" || APIkey === null || APIkey === "" || APIkey === "null") {
-  // Moved to below
-  $('.sidebar-wrapper, .language-wrapper').hide()
+	// Moved to below
+	$('.sidebar-wrapper, .language-wrapper').hide()
 } else {
 	app();
 }
