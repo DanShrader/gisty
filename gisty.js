@@ -101,38 +101,35 @@ var app = function () {
 			options || (options = {});
 			attrs || (attrs = _.clone(this.attributes));
 			var newFiles = {};
+
+      // deleted files first, so they can be appended if needed
+      filesToDelete.forEach(function(tbd){
+        // If the file existed then it can be deleted
+        if(typeof(orginalFiles[tbd]) !== 'undefined'){
+          newFiles[tbd] = {};
+        }
+      });
+
+
+
 			_.forEach(fileCollection.models, function (model) {
 				if (typeof (model) !== 'undefined') {
-
-          // deleted files first, so they can be appended if needed
-          filesToDelete.forEach(function(tbd){
-            // If the file existed then it can be deleted
-            if(typeof(orginalFiles[tbd]) !== 'undefined'){
-              newFiles[tbd] = {};
-            }
-          });
-
-
-
-
-
-
-
-
 					if (model.get('deleteFlag') === true) {
+    					newFiles[model.get('filename')]={};
   						model.destroy();
 					} else {
-
+            // console.log('model to keep')
+            // console.log(model)
 						newFiles[model.get('filename')] = {
 							'content': model.get('content')
 						};
 					}
-
 				}
 			});
 
-			console.log('newFiles');
-			console.log(newFiles);
+		// 	console.log('newFiles');
+		// 	console.log(newFiles);
+
 
 			attrs.files = newFiles;
 
@@ -185,9 +182,9 @@ var app = function () {
 
 				if (this.previous('filename') !== this.get('filename')) {
 					this.set('nameChange', this.previous('filename'));
-					console.log("the name changed")
+				// 	console.log("the name changed")
 					filesToDelete.push(this.previous('filename'));
-					console.log(this.get('nameChange'))
+				// 	console.log(this.get('nameChange'))
 				}
 			}, this);
 			
@@ -355,11 +352,11 @@ var app = function () {
 			this.$el.addClass('active');
 			fileCollection.reset();
 			
-			orginalFiles = _.clone(this.model.get("files"));
+		// 	orginalFiles = _.clone(this.model.get("files"));
 			
 			_.forEach(this.model.get("files"), function (file) {
 				fileCollection.add(file)
-				console.log("files:", "=============", file);
+				// console.log("files:", "=============", file);
 			});
 			gist.model = this.model;
 			gist.render();
@@ -444,34 +441,23 @@ var app = function () {
 			this.delegateEvents()
 		},
 		updateCode: function () {
-			// 	console.log('model is:')
-			// 	console.log(this.model.attributes)
-			// 	console.log('filename is:')
-			// 	console.log(this.ui.fileName.val())
-			// 	console.log('code is:')
-			// 	console.log(this.ui.codeEditor.val())
-			// 	console.log(this.ui.fileName)
-			//  Need incase the file is flagged for deletion
 			if (this.ui.fileName !== '.fileName' && this.model.get('flagForDelete') !== true) {
-			  console.log('saving file')
-			  console.log(this.model)
+			 // console.log('saving file')
+			 // console.log(this.model)
 				this.model.set("filename", this.ui.fileName.val());
 				this.model.set("content", this.ui.codeEditor.val());
 			}
-
 		},
 		flagForDelete: function () {
 		  if(typeof(this.model.get('size')) !== "undefined"){
-		    console.log('existing')
-  			this.model.set('deleteFlag', true);
-        filesToDelete.push(this.model.get('filename'));
+		    // console.log('existing')
+		    this.model.set('deleteFlag',true)
+        filesToDelete.push(_.clone(this.model.get('filename')));
   			this.$el.hide()
 		  } else {
-		    console.log('new')
+		    // console.log('new')
 		    this.model.destroy();
 		  }
-
-			// 	this.destroy();
 		}
 	});
 
@@ -661,6 +647,9 @@ var app = function () {
 		editView: function () {
 			// 	this.template = '#template-edit-details';
 			settings.mode = "edit";
+			
+			orginalFiles = _.clone(this.model.get("files"));
+			
 			this.render();
 			// 	this.status = "editMode"
 			_.forEach(files.children._views, function (childView) {
