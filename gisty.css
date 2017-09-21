@@ -21,7 +21,7 @@ body {
 
 
 .bg-inverse , .language-wrapper {
-    background-color: #1f2533 !important;
+    background-color: #2d2d2d !important;
     color: #d6d6d6;
 }
 
@@ -96,7 +96,7 @@ code{
 }
 
 .language-wrapper li:active, a.bg-inverse:active,.sidebar-nav li:active,.language-wrapper li:focus, a.bg-inverse:focus,.sidebar-nav li:focus{
-    background-color: #1f2533 !important;
+    background-color: #2d2d2d !important;
     color: #d6d6d6;
 }
 .language-wrapper li:hover, a.bg-inverse:hover,.sidebar-nav li:hover{
