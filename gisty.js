@@ -39,9 +39,7 @@ var app = function () {
 	};
 
 	var filesToDelete = [];
-	orginalFiles = {};
-	window.orginalFiles = _.clone(orginalFiles);
-	_.clone(window.filesToDelete = filesToDelete);
+	var orginalFiles = {};
 
 	var globalKey = APIkey;
 
@@ -644,7 +642,7 @@ var app = function () {
 	var tags = new tagsView()
 	tags.render();
 
-window.tags = tags;
+// window.tags = tags;
 
 	var detailView = Marionette.View.extend({
 		ui: {
@@ -838,14 +836,14 @@ window.tags = tags;
 	$("#tags").html(tags.el);
 	$(".searchbox").html(searchView.el);
 
-	window.gist = gist;
-	window.gists = gists;
-	window.fileCollection = fileCollection;
-	window.files = files;
-	window.gistList = gistList;
-	window.tagSummary = tagSummary;
-	window.tagViewSummary = tagViewSummary;
-	window.filtersAndTags = filtersAndTags;
+// 	window.gist = gist;
+// 	window.gists = gists;
+// 	window.fileCollection = fileCollection;
+// 	window.files = files;
+// 	window.gistList = gistList;
+// 	window.tagSummary = tagSummary;
+// 	window.tagViewSummary = tagViewSummary;
+// 	window.filtersAndTags = filtersAndTags;
 }
 
 var APIkey = localStorage.getItem("gistyAPIKey") || "";
