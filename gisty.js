@@ -227,7 +227,25 @@ var app = function () {
 
 	var fileTypeSummary = new Backbone.Collection();
 	var tagSummary = new Backbone.Collection();
+
+
+
+	var tagModel = Backbone.Model.extend({
+	  defaults : {
+	    tag: "",
+	    length: 0
+	  }
+	});
 	var tagViewSummary = new Backbone.Collection();
+	
+		tagViewSummary.model = tagModel
+	
+		tagViewSummary.comparator= function (model) {
+			return -model.get('tag');
+		}
+
+
+
 
 	var modelTaggin = function (model) {
 		_.forEach(model.get('files'), function (file) {
@@ -593,8 +611,13 @@ var app = function () {
 		tagName: 'ul',
 		childView: tagView,
 		collection: tagViewSummary,
-		emptyView: MyEmptyGistCollectionView
+		emptyView: MyEmptyGistCollectionView,
+		reorderOnSort: true,
+		viewComparator: 'tag'
 	});
+	
+	
+	
 	var tags = new tagsView()
 	tags.render();
 
