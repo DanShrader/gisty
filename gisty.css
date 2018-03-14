@@ -17,11 +17,11 @@ body {
   overflow-y: scroll;
 }
 
+nav {
+    background-color: #002B36;
+}
 
-
-
- .language-wrapper {
-    /*background-color: #292b2c!important;*/
+.language-wrapper {
     color: #d6d6d6;
 }
 
@@ -46,15 +46,9 @@ body {
   padding: 3px 0 6px 12px;
 }
 
-
-
-
-
-
 .sidebar-wrapper {
     position: fixed;
     width: 350px;
-    /*background-color: #f7f7f9;*/
     font-size: 12px;
     overflow-y: scroll;
     margin-left: 200px;
@@ -62,9 +56,7 @@ body {
     bottom: 0;
 }
 
-
 .sidebar-wrapper li  {
-    /*background-color:#f7f7f9;*/
     font-weight: bold;
 }
 .sidebar-wrapper p  {
@@ -89,10 +81,9 @@ code{
   text-indent: 0px !important;
 }
 
-.language-wrapper li:hover, .language-wrapper li.active{
-  background-color:#f7f7f9;
+.language-wrapper li:hover, .language-wrapper .active{
+  background-color:#073642;
   margin-right: 0;
-  color: #000000;
 }
 
 .language-wrapper li:active, a.bg-inverse:active,.sidebar-nav li:active,.language-wrapper li:focus, a.bg-inverse:focus,.sidebar-nav li:focus{
@@ -100,26 +91,11 @@ code{
     color: #d6d6d6;
 }
 .language-wrapper li:hover, a.bg-inverse:hover,.sidebar-nav li:hover{
-  /*background-color:#51e0c1 !important;*/
   cursor: pointer;
   cursor: hand;
 }
 
-/*.sidebar-nav li:hover,.sidebar-nav li:hover{*/
-/*  background-color:#d0d0d0 !important;*/
-/*  border-color: #d0d0d0;*/
-/*}*/
-
-
-/*.sidebar-nav li.active{*/
-/*    color: #000000;*/
-/*    background-color: #dedede;*/
-/*    border-color: #dedede;*/
-/*}*/
-
-
 .language-wrapper hr {
-  /*background-color:#51e0c1;*/
   margin-bottom: 3px !important;
 }
 
@@ -133,25 +109,14 @@ code{
   right: 10px;
 }
 
-/*.list-group-item:first-child,.list-group-item:last-child {*/
-/*    border-radius: 0;*/
-/*}*/
-
-/*.list-group-item{*/
-/*  display: block;*/
-/*}*/
-
 .files ul, .files ul li{
   list-style-type: none;
   padding: 0;
   margin: 0;
 }
 
-
 .edit-mode, .description{
-  /*background-color: #fffff1;*/
-  /*background-color: #d0d0d0;*/
-  /*background-color: #d0d0d000;*/
+  border-color: #1e434a !important;
   background-color: #1e434a;
   color: #ffffff;
 }
@@ -161,12 +126,10 @@ code{
   width: 100%;
   position: relative;
   border: 1px solid;
-  border-color: #d8d8da;
   margin-top: 1em;
   padding: .4em;
   border-radius: calc(.25rem - 1px);
 }
-
 
 .card-body .description {
   height: 300px;
@@ -180,10 +143,6 @@ code{
 .descriptionView {
   white-space: pre-wrap;
 }
-
-/*.btn {*/
-/*  border-radius: 0.15rem;*/
-/*}*/
 
 .btn-danger {
     color: #fff;
