@@ -851,6 +851,7 @@ var APIkey = localStorage.getItem("gistyAPIKey") || "";
 if (typeof (APIkey) === "undefined" || APIkey === null || APIkey === "" || APIkey === "null") {
 	// Moved to below
 	$('.sidebar-wrapper, .language-wrapper').hide()
+	$("#page-content-wrapper").css('margin-left','50px');
 } else {
 	app();
 }
@@ -861,6 +862,7 @@ var setup = function () {
 		localStorage.setItem("gistyAPIKey", pass);
 		APIkey = localStorage.getItem("gistyAPIKey")
 		$('.sidebar-wrapper, .language-wrapper').show()
+  	$("#page-content-wrapper").css('margin-left','550px');
 		app();
 
 	} else {
