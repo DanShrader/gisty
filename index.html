@@ -30,17 +30,19 @@
     <!--<link rel="icon" href="../../favicon.ico">-->
 
     <title>gisty~</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/androidstudio.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link href="bootstrap.solar.min.css" rel="stylesheet">
+    <link href="gisty.css" rel="stylesheet">
+    
     <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js'></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js'></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.3.3/backbone-min.js'></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/backbone.marionette/3.4.3/backbone.marionette.js'></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/backbone.radio/2.0.0/backbone.radio.min.js'></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github-gist.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.1/highlight.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
     <script>hljs.initHighlightingOnLoad();</script>
-    <link href="gisty.css" rel="stylesheet">
   </head>
 
   <script type="text/template" id='language-template'>
@@ -244,6 +246,7 @@
         <hr>
         <h4>Change log</h4>
         <ul>
+          <li><i>2018-03-14</i> Theme changes, now using "solar" theme from <a href="https://bootswatch.com/" target=_blank>https://bootswatch.com/</a></li>
           <li><i>2017-10-18</i> URL Change to https://www.gistyapp.com and added SSL Cert</li>
           <li><i>2017-09-22</i> Fixed double tags and added sortign on both the Languages and Tags</li>
           <li><i>2017-09-21</i> Fixed the saving multiple files in one gist</li>
@@ -354,11 +357,6 @@
             
             <p>This is a GitHub gist interface, with lots of filters, search, and is not very chatty with the API.</p>
             
-            <img src="screenshot.png" alt="screenshot" title="Screenshot" style="max-width:100%;">
-          
-            
-            <hr>
-            
             <h3>Setup</h3>
             
             <p>To start using this app you'll need to generate a GitHub API key and enter it the first time at the prompt.  The reason for this is I don't want to run a node server for API authentication.  It saves the key to you local storage so you don't have to keep entering it.  I never see it, cannot access it, and it is local to your machine.</p>
@@ -367,6 +365,9 @@
 
             <button class='btn btn-success btn-lg' onclick="setup()">Enter API key</button>
             
+            <hr>
+            
+            <img src="screenshot.png" alt="screenshot" title="Screenshot" style="max-width:60%;margin-left:20%">
             
           </div>
         </div>
