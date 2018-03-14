@@ -17,7 +17,9 @@ body {
   overflow-y: scroll;
 }
 
-
+nav {
+    background-color: #002B36;
+}
 
 
  .language-wrapper {
@@ -89,10 +91,10 @@ code{
   text-indent: 0px !important;
 }
 
-.language-wrapper li:hover, .language-wrapper li.active{
-  background-color:#f7f7f9;
+.language-wrapper li:hover, .language-wrapper .active{
+  background-color:#073642;
   margin-right: 0;
-  color: #000000;
+  /*color: #000000;*/
 }
 
 .language-wrapper li:active, a.bg-inverse:active,.sidebar-nav li:active,.language-wrapper li:focus, a.bg-inverse:focus,.sidebar-nav li:focus{
@@ -152,6 +154,7 @@ code{
   /*background-color: #fffff1;*/
   /*background-color: #d0d0d0;*/
   /*background-color: #d0d0d000;*/
+  border-color: #1e434a !important;
   background-color: #1e434a;
   color: #ffffff;
 }
@@ -161,7 +164,7 @@ code{
   width: 100%;
   position: relative;
   border: 1px solid;
-  border-color: #d8d8da;
+  /*border-color: #d8d8da;*/
   margin-top: 1em;
   padding: .4em;
   border-radius: calc(.25rem - 1px);
