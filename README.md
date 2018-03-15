@@ -1,4 +1,5 @@
 # gisty~
+
 This is a GitHub gist interface, with lots of filters, search, and is not very chatty.
 
 You can launch the app [here](https://www.gistyapp.com) or by browsing to https://www.gistyapp.com
@@ -7,13 +8,13 @@ You can launch the app [here](https://www.gistyapp.com) or by browsing to https:
 
 ## Work in progress!
 
-To use the tagging feature put a double hash tag infront of a word in the description and they'll show up.
+To use the tagging feature put a double hash tag in front of a word in the description and they'll show up.
 
 **Example:** ##tag or ##JavaScript
 
 The cool thing about this app it the ***all*** of the data is stored in GitHub so you can access all the information of the gist from your favorite integrations.
 
-**Note:** to start using this app you'll need to generate a GitHub API key and enter it the first time at the prompt.  The reason for this is I don't want to run a node server just for API authentication.  It saves the key to you local storage so you don't have to keep entering it.
+**Note:** To start using this app you'll need to generate a GitHub API key and enter it the first time at the prompt. The reason for this is we don't want to run a node server for API authentication. It saves the key to your local storage so you don't have to keep entering it. The team never see's it, cannot access it, and it is local to your machine.
 
 ## History / Backstory
 
@@ -29,7 +30,7 @@ You can create one [here](https://github.com/settings/tokens) on your GitHub acc
 * [X] Make the empty place holders have messages for empty
 * [X] Better setup tutorial
 * [X] Make cool logo
-* [ ] UI Clean up
+* [X] UI Clean up
 
 ### Thanks
 
@@ -40,4 +41,5 @@ You can create one [here](https://github.com/settings/tokens) on your GitHub acc
 * Marionette
 * Bootstrap
 * highlight.js
+* https://bootswatch.com/
 * Anyone else that I may have missed
