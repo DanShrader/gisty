@@ -508,6 +508,7 @@ var app = function () {
 
 	var languageView = Marionette.View.extend({
 		template: '#language-template',
+		className: 'list-group-item',
 		tagName: 'li',
 		events: {
 			"click": "filter"
@@ -537,7 +538,7 @@ var app = function () {
 	});
 
 	var languagesView = Marionette.CollectionView.extend({
-		className: "",
+		className: "list-group",
 		tagName: 'ul',
 		childView: languageView,
 		collection: fileTypeSummary,
@@ -869,3 +870,20 @@ var setup = function () {
 		alert("No API key found, please refresh and enter your API key to use the application")
 	}
 }
+
+// Thanks
+// https://stackoverflow.com/questions/7846980/how-do-i-switch-my-css-stylesheet-using-jquery
+
+$('#grayscale').click(function (){
+   $('link[href="bootstrap.light.min.css"]').attr('href','bootstrap.dark.min.css');
+   $('link[href="light.css"]').attr('href','dark.css');
+   $('link[href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css"]').attr('href','https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/railscasts.min.css');
+});
+
+$('#original').click(function (){
+   $('link[href="bootstrap.dark.min.css"]').attr('href','bootstrap.light.min.css');
+   $('link[href="dark.css"]').attr('href','light.css');
+   $('link[href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/railscasts.min.css"]').attr('href','https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css');
+});
+
+
