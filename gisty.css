@@ -161,3 +161,8 @@ code{
 code.hljs {
     background: #002b3600;
 }
+
+.twoline{
+    line-height: 1;
+    font-size: .8rem;
+}
