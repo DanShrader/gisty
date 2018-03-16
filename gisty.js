@@ -885,6 +885,8 @@ if (typeof (APIkey) === "undefined" || APIkey === null || APIkey === "" || APIke
 } else {
   if(themeColor === "light"){
     themeLight()
+  } else {
+    themeDark()
   }
 	app();
 }
