@@ -886,7 +886,7 @@ if (typeof (APIkey) === "undefined" || APIkey === null || APIkey === "" || APIke
   if(themeColor === "light"){
     themeLight()
   } else {
-    themeDark()
+    localStorage.setItem("gistyTheme", "dark");
   }
 	app();
 }
