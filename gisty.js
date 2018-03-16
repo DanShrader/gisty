@@ -850,28 +850,34 @@ var app = function () {
 
 // Thanks
 // https://stackoverflow.com/questions/7846980/how-do-i-switch-my-css-stylesheet-using-jquery
-var themeDark = function(){
-   $('link[href="bootstrap.light.min.css"]').attr('href','bootstrap.dark.min.css');
-   $('link[href="light.css"]').attr('href','dark.css');
-   $('link[href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css"]').attr('href','https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/railscasts.min.css');
-   localStorage.setItem("gistyTheme", "dark");
-}
-var themeLight = function(){
-   $('link[href="bootstrap.dark.min.css"]').attr('href','bootstrap.light.min.css');
-   $('link[href="dark.css"]').attr('href','light.css');
-   $('link[href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/railscasts.min.css"]').attr('href','https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css');
-   localStorage.setItem("gistyTheme", "light");
-   
-}
 
 
-$('#grayscale').click(function (){
-  themeDark()
+$(document).ready(function() {
+
+  
+  var themeDark = function(){
+     $('link[href="bootstrap.light.min.css"]').attr('href','bootstrap.dark.min.css');
+     $('link[href="light.css"]').attr('href','dark.css');
+     $('link[href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css"]').attr('href','https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/railscasts.min.css');
+     localStorage.setItem("gistyTheme", "dark");
+  }
+  var themeLight = function(){
+     $('link[href="bootstrap.dark.min.css"]').attr('href','bootstrap.light.min.css');
+     $('link[href="dark.css"]').attr('href','light.css');
+     $('link[href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/railscasts.min.css"]').attr('href','https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css');
+     localStorage.setItem("gistyTheme", "light");
+     
+  }
+
+  $('#dark').click(function (){
+    themeDark()
+  });
+  
+  $('#light').click(function (){
+    themeLight()
+  });
 });
 
-$('#original').click(function (){
-  themeLight()
-});
 
 var APIkey = localStorage.getItem("gistyAPIKey") || "";
 var themeColor = localStorage.getItem("gistyTheme") || "";
@@ -904,7 +910,6 @@ var setup = function () {
 		alert("No API key found, please refresh and enter your API key to use the application")
 	}
 }
-
 
 
 
