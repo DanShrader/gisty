@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<svg viewBox="0 0 1649 588.42578125" width="1649" height="588.42578125" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="0 0 1649 588.42578125" width="1649" height="588.42578125" xmlns="http://www.w3.org/2000/svg" xmlns:bx="https://boxy-svg.com">
   <defs>
     <style id="bx-google-fonts">@import url(https://fonts.googleapis.com/css?family=Exo+2:100,100italic,200,200italic,300,300italic,400,400italic,500,500italic,600,600italic,700,700italic,800,800italic,900,900italic);</style>
   </defs>
-  <ellipse style="fill: rgb(42, 161, 152);" transform="matrix(-0.7071070075035095, 0.7071070075035095, -0.7071070075035095, -0.7071070075035095, 698.2234497070312, 170.06820678710935)" cx="373.462" cy="197.895" rx="289.965" ry="290.936"/>
-  <g style="font-style:normal;font-weight:400;font-size:15.27499962px;font-family:'MS Shell Dlg 2';fill:#ffffff;fill-rule:evenodd;stroke:#99763d;stroke-width:1.56666827;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" id="g3497" font-style="normal" font-weight="400" font-size="15.275" transform="matrix(1, 0, 0, 1, 294.212891, 295.914917)">
-    <path style="fill-rule: evenodd; stroke: rgb(255, 255, 255); stroke-width: 1.56667; stroke-miterlimit: 4; stroke-dasharray: none; stroke-opacity: 1; fill: rgb(0, 43, 54);" id="path3499" d="M 280.821,0 C 280.821,-155.093 155.093,-280.821 0,-280.821 -155.093,-280.821 -280.821,-155.093 -280.821,0 -280.821,155.093 -155.093,280.821 0,280.821 155.093,280.821 280.821,155.093 280.821,0" vector-effect="none"/>
-  </g>
-  <ellipse style="stroke-width: 8; fill: none; stroke: rgb(42, 161, 152);" transform="matrix(-0.5394269824028015, 0.8420320153236389, -0.8420320153236389, -0.5394269824028015, 951.9160766601561, -461.0985107421875)" cx="990.78" cy="146.372" rx="263" ry="267.006"/>
+  <ellipse style="fill-opacity: 0.41; stroke-width: 8; stroke: rgb(42, 161, 151); stroke-linejoin: round; stroke-linecap: square; fill: none;" cx="293.972" cy="293.676" rx="280" ry="280" bx:origin="-0.007 0.481"/>
+  <ellipse style="stroke-width: 8; fill: none; stroke: rgb(42, 161, 152);" transform="matrix(1, 0.000081, -0.000081, 1, -696.555284, 147.760668)" cx="990.78" cy="146.372" rx="263" ry="267.006"/>
   <g style="font-style: normal; font-weight: 400; font-size: 15.275px; font-family: &quot;MS Shell Dlg 2&quot;; fill: rgb(255, 86, 0); fill-rule: evenodd; stroke: rgb(255, 86, 0); stroke-width: 2; stroke-linecap: square; stroke-linejoin: bevel; stroke-opacity: 1;" id="g3491" font-style="normal" font-weight="400" font-size="15.275" transform="matrix(0.7159219980239868, 0, 0, 0.7159219980239868, 326.2153930664062, 475.00506591796875)">
     <path style="fill-rule: evenodd; stroke-opacity: 1; fill: rgb(42, 161, 152); stroke: rgb(42, 161, 152);" id="path3493" d="M 32.1383,0 C 32.1383,-17.7495 17.7495,-32.1383 0,-32.1383 -17.7495,-32.1383 -32.1383,-17.7495 -32.1383,0 -32.1383,17.7495 -17.7495,32.1383 0,32.1383 17.7495,32.1383 32.1383,17.7495 32.1383,0" vector-effect="none"/>
   </g>

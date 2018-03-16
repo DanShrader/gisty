@@ -494,7 +494,7 @@ var app = function () {
 	});
 
 	var filesView = Marionette.CollectionView.extend({
-		className: "",
+		className: "list-group",
 		tagName: 'ul',
 		childView: fileView,
 		collection: fileCollection,
@@ -508,6 +508,7 @@ var app = function () {
 
 	var languageView = Marionette.View.extend({
 		template: '#language-template',
+		className: 'list-group-item',
 		tagName: 'li',
 		events: {
 			"click": "filter"
@@ -537,7 +538,7 @@ var app = function () {
 	});
 
 	var languagesView = Marionette.CollectionView.extend({
-		className: "",
+		className: "list-group",
 		tagName: 'ul',
 		childView: languageView,
 		collection: fileTypeSummary,
@@ -608,6 +609,7 @@ var app = function () {
 	var tagView = Marionette.View.extend({
 		template: '#tag-template',
 		tagName: 'li',
+		className: "list-group-item",
 		events: {
 			"click": "filter"
 		},
@@ -630,7 +632,7 @@ var app = function () {
 	});
 
 	var tagsView = Marionette.CollectionView.extend({
-		className: "",
+		className: "list-group",
 		tagName: 'ul',
 		childView: tagView,
 		collection: tagViewSummary,
@@ -846,13 +848,44 @@ var app = function () {
 // 	window.filtersAndTags = filtersAndTags;
 }
 
+// Thanks
+// https://stackoverflow.com/questions/7846980/how-do-i-switch-my-css-stylesheet-using-jquery
+var themeDark = function(){
+   $('link[href="bootstrap.light.min.css"]').attr('href','bootstrap.dark.min.css');
+   $('link[href="light.css"]').attr('href','dark.css');
+   $('link[href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css"]').attr('href','https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/railscasts.min.css');
+   localStorage.setItem("gistyTheme", "dark");
+}
+var themeLight = function(){
+   $('link[href="bootstrap.dark.min.css"]').attr('href','bootstrap.light.min.css');
+   $('link[href="dark.css"]').attr('href','light.css');
+   $('link[href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/railscasts.min.css"]').attr('href','https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css');
+   localStorage.setItem("gistyTheme", "light");
+   
+}
+
+
+$('#grayscale').click(function (){
+  themeDark()
+});
+
+$('#original').click(function (){
+  themeLight()
+});
+
 var APIkey = localStorage.getItem("gistyAPIKey") || "";
+var themeColor = localStorage.getItem("gistyTheme") || "";
+
+
 
 if (typeof (APIkey) === "undefined" || APIkey === null || APIkey === "" || APIkey === "null") {
 	// Moved to below
 	$('.sidebar-wrapper, .language-wrapper').hide()
 	$("#page-content-wrapper").css('margin-left','50px');
 } else {
+  if(themeColor === "light"){
+    themeLight()
+  }
 	app();
 }
 
@@ -869,3 +902,8 @@ var setup = function () {
 		alert("No API key found, please refresh and enter your API key to use the application")
 	}
 }
+
+
+
+
+

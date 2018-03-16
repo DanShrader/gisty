@@ -27,8 +27,13 @@
     <title>gisty~</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/railscasts.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
-    <link href="bootstrap.solar.min.css" rel="stylesheet">
+    
+    <!--<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">-->
+    <link href="default.css" rel="stylesheet" id="themeDark">
+    <link href="bootstrap.light.min.css" rel="stylesheet alternate" id="themeLight">
+    <link href="bootstrap.dark.min.css" rel="stylesheet" id="themeDark">
     <link href="gisty.css" rel="stylesheet">
+    <link href="dark.css" rel="stylesheet">
     
     <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js'></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js'></script>
@@ -41,12 +46,12 @@
 
 
   <script type="text/template" id='language-template'>
-    <span style='font-height:24px !important;font-weight:bold;'><%= language %> <span class="badge badge-pill badge-default"><%= length %></span></span>
+    <span style='font-height:24px !important;font-weight:bold;'><%= language %> <span class="badge badge-pill badge-secondary"><%= length %></span></span>
   </script>
 
 
   <script type="text/template" id='tag-template'>
-    <span style='font-height:24px !important;font-weight:bold;font-style:italic'><i class="fa fa-tag" aria-hidden="true"></i> <%= tag %> <span class="badge badge-pill badge-default"><%= length %></span></span>
+    <span style='font-height:24px !important;font-weight:bold;font-style:italic'><i class="fa fa-tag" aria-hidden="true"></i> <%= tag %> <span class="badge badge-pill badge-secondary"><%= length %></span></span>
   </script>
 
 
@@ -57,7 +62,7 @@
       </li>
       <li class="nav-item">
         <input class="form-control mr-sm-2 searchInput" type="text" placeholder="Search">
-        <span class="btn btn-outline-success my-2 my-sm-0 searchBTN"><i class="fa fa-search" aria-hidden="true"></i> Search</span>
+        <span class="btn btn-success my-2 my-sm-0 searchBTN"><i class="fa fa-search" aria-hidden="true"></i> Search</span>
       </li>
     </ul>
   </script>
@@ -134,7 +139,7 @@
       <%
         if (tags.length > 0) {
           %>
-          <i class="fa fa-tags" aria-hidden="true" style="color:#b58900;"></i>
+          <i class="fa fa-tags" aria-hidden="true"></i>
           <%
           
             _.each(tags.split(' '), function (tags) { %>
@@ -198,6 +203,7 @@
         <hr>
         <h4>Change log</h4>
         <ul>
+          <li><i>2018-03-15</i> Adjusted code to allow easier theme import not supports theme switching.  Stores value in local storage.</li>
           <li><i>2018-03-14</i> Theme changes, now using "solar" theme from <a href="https://bootswatch.com/" target=_blank>https://bootswatch.com/</a></li>
           <li><i>2017-10-18</i> URL Change to https://www.gistyapp.com and added SSL Cert</li>
           <li><i>2017-09-22</i> Fixed double tags and added sortign on both the Languages and Tags</li>
@@ -256,7 +262,7 @@
   </script>
 
   <body>
-    <nav class="navbar-inverse fixed-top bg-inverse">
+    <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-primary">
       <ul class="nav">
         <li class="nav-item">
             <a class="navbar-brand" href="#">
@@ -266,19 +272,31 @@
             </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link bg-inverse" href="https://github.com/DanShrader/gisty" target="_blank">GitHub Repo</a>
+          <a class="btn btn-success" href="https://github.com/DanShrader/gisty" target="_blank">GitHub Repo</a>
         </li>
+
+          &nbsp
+
+        <li class="nav-item">
+          <button class="btn btn-info twoline" id="grayscale">Dark </br> Theme</button>
+        </li>
+        
+          &nbsp
+        
+        <li class="nav-item">
+          <button class="btn btn-info twoline" id="original">Light </br> Theme</button>
+        </li>
+        
+        
       </ul>
         <span class="nav-item searchbox float-right"></span>
     </nav>
   
     <div id="wrapper">
       <div class="language-wrapper">
-        <h6>Languages <i class="fa fa-code" aria-hidden="true"></i></h6>
-        <hr style="margin:0rem;color:#ffffff">
+        <h6 style="margin-top:.4rem;padding-left:.3rem">Languages <i class="fa fa-code" aria-hidden="true"></i></h6>
         <div id='language'></div>
-        <h6>Tags <i class="fa fa-tags" aria-hidden="true"></i></h6>
-        <hr style="margin:0rem;color:#ffffff">
+        <h6 style="margin-top:.4rem;padding-left:.3rem">Tags <i class="fa fa-tags" aria-hidden="true"></i></h6>
         <div id='tags'></div>
       </div>
       <div class="sidebar-wrapper" id='list'></div>

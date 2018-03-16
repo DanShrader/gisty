@@ -1,0 +1,28 @@
+.bg-primary {
+    background-color: #002B36 !important;
+    border-bottom: 1px solid  #073642;
+}
+
+.edit-mode, .description{
+  border-color: #1e434a !important;
+  background-color: #1e434a !important;
+  color: #ffffff !important;
+}
+
+
+.btn-danger {
+    color: #fff;
+    background-color: #d9534f;
+    border-color: #d9534f;
+}
+
+.btn-danger:hover {
+    color: #fff;
+    background-color: #d23430;
+    border-color: #c9302c;
+}
+
+.sidebar-wrapper{
+    border-left: 1px solid  #073642;
+    border-right: 1px solid  #073642;
+}
