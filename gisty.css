@@ -146,18 +146,6 @@ code{
   white-space: pre-wrap;
 }
 
-.btn-danger {
-    color: #fff;
-    background-color: #d9534f;
-    border-color: #d9534f;
-}
-
-.btn-danger:hover {
-    color: #fff;
-    background-color: #d23430;
-    border-color: #c9302c;
-}
-
 code.hljs {
     background: #002b3600;
 }
