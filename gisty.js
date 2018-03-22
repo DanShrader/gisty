@@ -902,6 +902,7 @@ $(document).ready(function() {
     } else {
       localStorage.setItem("gistyTheme", "dark");
     }
+    $('.sidebar-wrapper, .language-wrapper').show()
     $("#page-content-wrapper").css('margin-left','550px');
   	app();
   }
