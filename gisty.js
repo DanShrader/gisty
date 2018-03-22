@@ -438,12 +438,14 @@ var app = function () {
 		tagName: 'li',
 		ui: {
 			copy: '.copy',
+			send: '.send-gist',
 			fileName: '.fileName',
 			codeEditor: 'textarea',
 			deleteFile: '.deleteFile'
 		},
 		events: {
 			"click @ui.copy": "copy",
+			"click @ui.send": "send",
 			"click @ui.deleteFile": "flagForDelete"
 		},
 
@@ -460,6 +462,22 @@ var app = function () {
 			setClipboard(this.model.get('content'));
 
 		},
+		
+    send: function(){
+      var filename = this.model.get('filename');
+      var content = this.model.get('content');
+      var subjectPrefix = "";
+      var messagePrefix = "I've attached the " +  filename +  " gist from my collection for you, please see below. \n \n \n";
+      var messagePost = "\n \n \n Hope it helps! \n \n Sent via https://www.gistyapp.com an open source gist manager.";
+      // Thanks
+      // https://stackoverflow.com/questions/10219781/javascript-adding-linebreak-in-mailto-body
+      content = messagePrefix + content + messagePost;
+      content = encodeURIComponent(content);
+      filename = subjectPrefix + filename + " gist";
+      window.open('mailto:?subject='+filename+'&body='+content);
+    },
+		
+		
 		change: function () {
 			settings.mode = 'edit'
 			this.template = '#template-edit-file';
@@ -704,6 +722,7 @@ var app = function () {
 				childView.change()
 			});
 		},
+
 
 		newView: function () {
 			// 	this.template = '#template-edit-details';
