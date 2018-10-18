@@ -2,3 +2,17 @@
     border-left: 1px solid #00000020;
     border-right: 1px solid #00000020;
 }
+
+.list-group-item.active{
+    background-color: #3498db;
+    border-color: #3498db;
+}
+
+.language-wrapper li:active, a.bg-inverse:active, .sidebar-nav li:active, .language-wrapper li:focus, a.bg-inverse:focus, .sidebar-nav li:focus{
+    background-color: #2384c6 !important;
+    border-color: #217dbb !important;
+}
+
+.badge-primary{
+    background-color: #95a5a6;
+}
