@@ -43,45 +43,32 @@ var app = function () {
 
 	var globalKey = APIkey;
 
-// Thanks to:
-// https://github.com/jquery/jquery/issues/2187
-
-$.ajaxSetup({
+	$.ajaxSetup({
 		cache: false,
-    // headers: function() {
-    //     var token = '';
-    //     return {
-    //         "Authorization": "Token " + globalKey
-    //     };
-    // },
-    beforeSend: function (xhr) {
-		  xhr.setRequestHeader ("Authorization", "Token " + globalKey);
-    },
-    statusCode: {
-        401: function () {
-            console.error('401... is the token is no longer valid?')
-        }
-    },
-		// data: {
-		// 	access_token: globalKey
-		// },
-});
+		data: {
+			access_token: globalKey
+		}
+	});
 
+	var urlWithKey = function (url, key) {
+		return function () {
+			return url + "?access_token=" + key;
+		};
+	};
 
 	var nativeSync = Backbone.sync;
 	Backbone.sync = function (method, model, options) {
 		if (model && (method === 'create')) {
-			console.info("this is a new gist");
-			model.url = 'https://api.github.com/gists';
+			model.url = urlWithKey('https://api.github.com/gists', globalKey);
 		}
 		if (model && (method === 'update')) {
 			if (model.get('id') !== null) {
-				method = 'this is a patch';
-				console.info("id this is a patch");
-				model.url = 'https://api.github.com/gists/' + model.get('id');
+				method = 'patch';
+				// console.info("id this is a patch");
+				model.url = urlWithKey('https://api.github.com/gists/' + model.get('id'), globalKey);
 			} else {
-				console.info("this is a no id");
-				model.url = 'https://api.github.com/gists';
+				// console.info("no id");
+				model.url = urlWithKey('https://api.github.com/gists', globalKey);
 			}
 		}
 		nativeSync(method, model, options);
@@ -98,8 +85,7 @@ $.ajaxSetup({
 			tags: " "
 		},
 		destroy: function (attrs, options) {
-		// 	var alteredUrl = this.get("url") + '?access_token=' + globalKey;
-			var alteredUrl = this.get("url");
+			var alteredUrl = this.get("url") + '?access_token=' + globalKey;
 			var opts = _.extend({
 				url: alteredUrl
 			});
@@ -217,8 +203,7 @@ $.ajaxSetup({
 
 	fileCollection.on("add", function (file) {
 		if (typeof (file.get("raw_url")) !== 'undefined') {
-			var url = file.get("raw_url");
-		// 	var url = file.get("raw_url") + '?' + globalKey;
+			var url = file.get("raw_url") + '?' + globalKey;
 			$.ajax({
 				url: url,
 				type: 'GET',
@@ -263,6 +248,10 @@ $.ajaxSetup({
 	var tagViewSummary = new Backbone.Collection();
 
 	tagViewSummary.model = tagModel
+
+// 	tagViewSummary.comparator = function (model) {
+// 		return -model.get('tag');
+// 	}
 
 	var modelTaggin = function (model) {
 		_.forEach(model.get('files'), function (file) {
