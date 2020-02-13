@@ -48,39 +48,30 @@ var app = function () {
 
 $.ajaxSetup({
 		cache: false,
-    // headers: function() {
-    //     var token = '';
-    //     return {
-    //         "Authorization": "Token " + globalKey
-    //     };
-    // },
     beforeSend: function (xhr) {
-		  xhr.setRequestHeader ("Authorization", "Token " + globalKey);
+		  xhr.setRequestHeader("Authorization", "Token " + globalKey);
     },
     statusCode: {
         401: function () {
             console.error('401... is the token is no longer valid?')
         }
     },
-		// data: {
-		// 	access_token: globalKey
-		// },
 });
 
 
 	var nativeSync = Backbone.sync;
 	Backbone.sync = function (method, model, options) {
 		if (model && (method === 'create')) {
-			console.info("this is a new gist");
+		// 	console.info("this is a new gist");
 			model.url = 'https://api.github.com/gists';
 		}
 		if (model && (method === 'update')) {
 			if (model.get('id') !== null) {
 				method = 'this is a patch';
-				console.info("id this is a patch");
+				// console.info("id this is a patch");
 				model.url = 'https://api.github.com/gists/' + model.get('id');
 			} else {
-				console.info("this is a no id");
+				// console.info("this is a no id");
 				model.url = 'https://api.github.com/gists';
 			}
 		}
